@@ -1,0 +1,23 @@
+﻿using CharityLink.Dtos.Posts;
+using CharityLink.Models;
+
+namespace CharityLink.Mappers
+{
+    public static class PostMapper
+    {
+        public static PostDto ToPostDto (this Post post)
+        {
+            return new PostDto
+            {
+                PostId = post.PostId,
+                Title = post.Title,
+                Content = post.Content,
+                UserId = post.UserId,
+                CommunityID = post.CommunityID,
+                createDate = post.createDate,
+                Comments = post.Comments.Select(c => c.ToCommentDto()).ToList(),
+                Likes = post.Likes.Select(l => l.ToLikeDto()).ToList(),
+            };
+        }
+    }
+}
