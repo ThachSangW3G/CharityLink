@@ -1,4 +1,5 @@
 ﻿using CharityLink.Data;
+using CharityLink.Dtos.Communities;
 using CharityLink.Mappers;
 using CharityLink.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -51,10 +52,23 @@ namespace CharityLink.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody] CreateCommunityRequestDto communityDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var community = communityDto.ToCommunityFromCreateDTO();
+
+            await _applicationDBContext.Communities.AddAsync(community);
+            await _applicationDBContext.SaveChangesAsync();
+
+            return Ok();
 
 
-
-
+        }
 
        
     }
