@@ -19,5 +19,29 @@ namespace CharityLink.Mappers
                 Likes = post.Likes.Select(l => l.ToLikeDto()).ToList(),
             };
         }
+
+        public static Post ToPostFromCreateDTO(this CreatePostRequestDto postRequestDto)
+        {
+            return new Post
+            {
+                Title = postRequestDto.Title,
+                Content = postRequestDto.Content,
+                UserId = postRequestDto.UserId,
+                CommunityID = postRequestDto.CommunityID,
+                createDate = postRequestDto.createDate,
+            };
+        }
+
+        public static Post ToPostFromUpdateDTO(this UpdatePostRequestDto postRequestDto)
+        {
+            return new Post
+            {
+                Title = postRequestDto.Title,
+                Content = postRequestDto.Content,
+                UserId = postRequestDto.UserId,
+                CommunityID = postRequestDto.CommunityID,
+                createDate = postRequestDto.createDate,
+            };
+        }
     }
 }

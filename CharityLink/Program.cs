@@ -1,5 +1,6 @@
 using CharityLink.Data;
 using CharityLink.Interfaces;
+using CharityLink.Repositories;
 using CharityLink.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 
 builder.Services.AddControllers();
