@@ -19,5 +19,7 @@ namespace CharityLink.Models
         public int PostId { get; set; }
 
         public Post Post { get; set; }
+
+        public DateTime CreateDate { get; set; }
     }
 }

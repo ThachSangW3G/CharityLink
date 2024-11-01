@@ -1,10 +1,7 @@
-﻿using CharityLink.Models;
-
-namespace CharityLink.Dtos.Comments
+﻿namespace CharityLink.Dtos.Comments
 {
-    public class CommentDto
+    public class CreateCommentRequestDto
     {
-        public int CommentId { get; set; }
 
         public string Content { get; set; }
 
@@ -12,7 +9,5 @@ namespace CharityLink.Dtos.Comments
 
         public int PostId { get; set; }
         public DateTime CreateDate { get; set; }
-
-
     }
 }

@@ -95,6 +95,10 @@ namespace CharityLink.Data
      .WithMany(p => p.Comments)
      .HasForeignKey(c => c.PostId)
      .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Donation>()
+        .Property(d => d.Amount)
+        .HasColumnType("decimal(18,2)");
         }
 
 

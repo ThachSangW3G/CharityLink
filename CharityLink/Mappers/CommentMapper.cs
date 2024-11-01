@@ -1,4 +1,5 @@
 ﻿using CharityLink.Dtos.Comments;
+using CharityLink.Dtos.Communities;
 using CharityLink.Models;
 
 namespace CharityLink.Mappers
@@ -13,6 +14,29 @@ namespace CharityLink.Mappers
                 UserId = comment.UserId,
                 PostId = comment.PostId,
                 Content = comment.Content,
+                CreateDate = comment.CreateDate
+            };
+        }
+
+        public static Comment ToCommentFromCreateDTO(this CreateCommentRequestDto commentRequestDto)
+        {
+            return new Comment
+            {
+                UserId = commentRequestDto.UserId,
+                PostId = commentRequestDto.PostId,
+                Content = commentRequestDto.Content,
+                CreateDate = commentRequestDto.CreateDate
+            };
+        }
+
+        public static Comment ToCommentFromUpdateDTO(this UpdateCommentRequestDto commentRequestDto)
+        {
+            return new Comment
+            {
+                UserId = commentRequestDto.UserId,
+                PostId = commentRequestDto.PostId,
+                Content = commentRequestDto.Content,
+                CreateDate = commentRequestDto.CreateDate
             };
         }
     }
