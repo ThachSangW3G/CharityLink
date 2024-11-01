@@ -20,7 +20,7 @@ namespace CharityLink.Models
  
         public string AvatarUrl { get; set; }
 
-        public List<User> Friends { get; set; }
+ 
         public List<Like> Likes { get; set; }
         public List<Post> Posts { get; set; }
         public List<Comment> Comments { get; set; }

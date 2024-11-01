@@ -1,5 +1,6 @@
 ﻿using CharityLink.Data;
 using CharityLink.Dtos.Communities;
+using CharityLink.Interfaces;
 using CharityLink.Mappers;
 using CharityLink.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,23 +12,25 @@ namespace CharityLink.Controllers
     [ApiController]
     public class CommunityController : ControllerBase
     {
-       private readonly ApplicationDBContext _applicationDBContext;
+        private readonly ApplicationDBContext _applicationDBContext;
+        private readonly ICommunityRepository _communityRepository;
 
-        public CommunityController(ApplicationDBContext applicationDBContext)
+
+        public CommunityController(ApplicationDBContext applicationDBContext, ICommunityRepository communityRepository)
         {
             _applicationDBContext = applicationDBContext;
+            _communityRepository = communityRepository;
         }
 
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Community>>> GetCommunites()
         {
-            if (_applicationDBContext.Communities == null)
-            {
-                return NotFound();
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var communities = await _applicationDBContext.Communities.ToListAsync();
+
+            var communities = await _communityRepository.GetAllAsync();
 
             var communityDto = communities.Select(c => c.ToCommunityDto());
 
@@ -35,20 +38,19 @@ namespace CharityLink.Controllers
         }
 
 
-        [HttpGet("{Id}")]
-        public async Task<ActionResult<Community>> GetCommunity(int id)
+        [HttpGet("{Id:int}")]
+        public async Task<ActionResult<Community>> GetCommunity([FromRoute] int Id)
         {
-            if (_applicationDBContext.Communities == null)
-            {
-                return NotFound();  
-            }
-            var community = await _applicationDBContext.Communities.FindAsync(id);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var community = await _communityRepository.GetByIdAsync(Id);
             if (community == null)
             {
                 return NotFound();
             }
 
-            return  Ok(community.ToCommunityDto());
+            return Ok(community.ToCommunityDto());
         }
 
 
@@ -62,15 +64,51 @@ namespace CharityLink.Controllers
 
             var community = communityDto.ToCommunityFromCreateDTO();
 
-            await _applicationDBContext.Communities.AddAsync(community);
-            await _applicationDBContext.SaveChangesAsync();
+            await _communityRepository.CreateAsync(community);
 
             return Ok();
 
 
         }
 
-       
+        [HttpPut]
+        [Route("{Id:int}")]
+        public async Task<ActionResult> Update([FromRoute] int Id, [FromForm] UpdateCommunityRequestDto communityDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var community = await _communityRepository.UpdateAsync(Id, communityDto.ToCommunityFromUpdateDTO());
+
+            if (community == null)
+            {
+                return NotFound("Community not found");
+
+            }
+
+            return Ok(community.ToCommunityDto());
+        }
+
+
+        [HttpDelete]
+        [Route("{Id:int}")]
+        public async Task<ActionResult> Delete([FromRoute] int Id)
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var community = await _communityRepository.DeleteAsync(Id);
+
+            if (community == null)
+            {
+                return NotFound("Community does not exist");
+            }
+
+            return Ok(community);
+        }
     }
 }
  

@@ -32,5 +32,17 @@ namespace CharityLink.Mappers
                 CreateDate= communityRequestDto.CreateDate,
             };
         }
+
+        public static Community ToCommunityFromUpdateDTO(this UpdateCommunityRequestDto communityRequestDto)
+        {
+            return new Community
+            {
+                CommunityName= communityRequestDto.CommunityName,
+                Description = communityRequestDto.Description,
+                IsPublished= communityRequestDto.IsPublished,
+                AdminId= communityRequestDto.AdminId,
+                CreateDate= communityRequestDto.CreateDate,
+            };
+        }
     }
 }
