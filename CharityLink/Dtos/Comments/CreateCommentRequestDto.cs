@@ -8,5 +8,6 @@
         public int UserId { get; set; }
 
         public int PostId { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 }
