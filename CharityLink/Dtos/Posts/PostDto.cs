@@ -21,8 +21,6 @@ namespace CharityLink.Dtos.Posts
 
         public DateTime createDate { get; set; }
 
-        public List<CommentDto> Comments { get; set; }
-
-        public List<LikeDto> Likes { get; set; }
+       
     }
 }

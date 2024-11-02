@@ -112,5 +112,18 @@ namespace CharityLink.Controllers
             return Ok(comment);
         }
 
+        [HttpGet("{PostId:int}/comments")]
+        public async Task<ActionResult<IEnumerable<Comment>>> GetCommentsByPostId(int PostId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+
+            var comments = await _commentRepository.GetCommentsByPostId(PostId);
+
+            var commentDto = comments.Select(c => c.ToCommentDto());
+
+            return Ok(commentDto);
+        }
     }
 }

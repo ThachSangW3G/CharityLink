@@ -1,4 +1,4 @@
-﻿using CharityLink.Dtos.UserCommunity;
+﻿using CharityLink.Dtos.UserCommunitys;
 using CharityLink.Models;
 
 namespace CharityLink.Mappers

@@ -46,6 +46,11 @@ namespace CharityLink.Repositories
             return await _dBContext.Comments.FirstOrDefaultAsync(c => c.CommentId == Id);
         }
 
+        public async Task<List<Comment>> GetCommentsByPostId(int PostId)
+        {
+            return await _dBContext.Comments.Where(c => c.PostId == PostId).ToListAsync();
+        }
+
         public async Task<Comment?> UpdateAsync(int Id, Comment Comment)
         {
             var existingComment = await _dBContext.Comments.FindAsync(Id);

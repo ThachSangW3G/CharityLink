@@ -1,6 +1,6 @@
 ﻿using CharityLink.Models;
 
-namespace CharityLink.Dtos.UserCommunity
+namespace CharityLink.Dtos.UserCommunitys
 {
     public class UserCommunityDto
     {
