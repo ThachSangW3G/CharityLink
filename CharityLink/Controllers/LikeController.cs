@@ -4,6 +4,7 @@ using CharityLink.Dtos.Likes;
 using CharityLink.Interfaces;
 using CharityLink.Mappers;
 using CharityLink.Models;
+using CharityLink.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CharityLink.Controllers
@@ -109,6 +110,22 @@ namespace CharityLink.Controllers
             }
 
             return Ok(like);
+        }
+
+
+
+        [HttpGet("{PostId:int}/likes")]
+        public async Task<ActionResult<IEnumerable<Comment>>> GetLikesByPostId(int PostId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+
+            var likes = await _likeRepository.GetLikesByPostId(PostId);
+
+            var likeDto = likes.Select(c => c.ToLikeDto());
+
+            return Ok(likeDto);
         }
     }
 }

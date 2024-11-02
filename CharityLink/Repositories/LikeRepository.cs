@@ -44,6 +44,11 @@ namespace CharityLink.Repositories
             return await _dBContext.Likes.FirstOrDefaultAsync(c => c.LikeId == Id);
         }
 
+        public async Task<List<Like>> GetLikesByPostId(int PostId)
+        {
+            return await _dBContext.Likes.Where(c => c.PostId == PostId).ToListAsync();
+        }
+
         public async Task<Like?> UpdateAsync(int Id, Like Like)
         {
             var existingLike = await _dBContext.Likes.FindAsync(Id);

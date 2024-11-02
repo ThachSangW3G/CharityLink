@@ -9,5 +9,6 @@ namespace CharityLink.Interfaces
         Task<Like> CreateAsync(Like Like);
         Task<Like?> UpdateAsync(int Id, Like Like);
         Task<Like?> DeleteAsync(int Id);
+        Task<List<Like>> GetLikesByPostId(int PostId);
     }
 }
