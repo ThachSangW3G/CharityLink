@@ -1,4 +1,5 @@
 ﻿using CharityLink.Dtos.Donations;
+using CharityLink.Dtos.Likes;
 using CharityLink.Models;
 
 namespace CharityLink.Mappers
@@ -14,6 +15,28 @@ namespace CharityLink.Mappers
                 UserId = donation.UserId,
                 CommunityId = donation.CommunityId,
                 donateDate = donation.donateDate,
+            };
+        }
+
+        public static Donation ToDonationFromCreateDTO(this CreateDonationRequestDto donationRequestDto)
+        {
+            return new Donation
+            {
+                Amount = donationRequestDto.Amount,
+                UserId = donationRequestDto.UserId,
+                CommunityId = donationRequestDto.CommunityId,
+                donateDate = donationRequestDto.donateDate,
+            };
+        }
+
+        public static Donation ToDonationFromUpdateDTO(this UpdateDonationRequestDto donationRequestDto)
+        {
+            return new Donation
+            {
+                Amount = donationRequestDto.Amount,
+                UserId = donationRequestDto.UserId,
+                CommunityId = donationRequestDto.CommunityId,
+                donateDate = donationRequestDto.donateDate,
             };
         }
     }
