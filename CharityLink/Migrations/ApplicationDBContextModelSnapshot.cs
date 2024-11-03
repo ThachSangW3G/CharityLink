@@ -34,6 +34,9 @@ namespace CharityLink.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
@@ -224,12 +227,7 @@ namespace CharityLink.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("int");
-
                     b.HasKey("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Users");
                 });
@@ -347,13 +345,6 @@ namespace CharityLink.Migrations
                     b.Navigation("Community");
                 });
 
-            modelBuilder.Entity("CharityLink.Models.User", b =>
-                {
-                    b.HasOne("CharityLink.Models.User", null)
-                        .WithMany("Friends")
-                        .HasForeignKey("UserId1");
-                });
-
             modelBuilder.Entity("CharityLink.Models.UserCommunity", b =>
                 {
                     b.HasOne("CharityLink.Models.Community", "Community")
@@ -394,8 +385,6 @@ namespace CharityLink.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Donations");
-
-                    b.Navigation("Friends");
 
                     b.Navigation("Likes");
 

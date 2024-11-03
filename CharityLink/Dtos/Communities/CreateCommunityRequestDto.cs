@@ -1,6 +1,5 @@
 ﻿using CharityLink.Dtos.Donations;
 using CharityLink.Dtos.Posts;
-using CharityLink.Dtos.UserCommunity;
 
 namespace CharityLink.Dtos.Communities
 {
