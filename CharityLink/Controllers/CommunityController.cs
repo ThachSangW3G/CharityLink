@@ -109,6 +109,84 @@ namespace CharityLink.Controllers
 
             return Ok(community);
         }
+
+        [HttpGet("{communityId:int}/get-posts")]
+        public async Task<ActionResult<List<Post>>> GetPostsByCommunityId(int communityId)
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var posts = await _communityRepository.GetPostByCommunityId(communityId);
+
+            var postDto = posts.Select(p => p.ToPostDto()).ToList();
+
+            return Ok(postDto);
+
+        }
+
+
+        [HttpGet("{communityId:int}/get-donations")]
+        public async Task<ActionResult<List<Donation>>> GetDoantionsByCommunityId(int communityId)
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var donations = await _communityRepository.GetDonationByCommunityId(communityId);
+
+            var donationDto = donations.Select(p => p.ToDonationDto()).ToList();
+
+            return Ok(donationDto);
+
+        }
+
+        [HttpGet("{communityId:int}/get-amount-for-community")]
+        public async Task<ActionResult<decimal>> GetAmountForCommunity(int communityId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var amount = await _communityRepository.GetAmountDonationForCommunity(communityId);
+
+            return Ok(amount);
+        }
+
+
+        [HttpGet("get-upcoming")]
+        public async Task<ActionResult<IEnumerable<Community>>> GetUpcoming()
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            
+            var communities = await _communityRepository.GetUpComing();
+
+            var communiyDto = communities.Select(c => c.ToCommunityDto()).ToList();
+            return Ok(communiyDto);
+        }
+
+        [HttpGet("get-ongoing")]
+        public async Task<ActionResult<IEnumerable<Community>>> GetOnGoing()
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var communities = await _communityRepository.GetOnGoing();
+
+            var communiyDto = communities.Select(c => c.ToCommunityDto()).ToList();
+            return Ok(communiyDto);
+        }
+
+        [HttpGet("get-completed")]
+        public async Task<ActionResult<IEnumerable<Community>>> GetCompleted()
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var communities = await _communityRepository.GetCompleted();
+
+            var communiyDto = communities.Select(c => c.ToCommunityDto()).ToList();
+            return Ok(communiyDto);
+        }
+
+
     }
 }
  
