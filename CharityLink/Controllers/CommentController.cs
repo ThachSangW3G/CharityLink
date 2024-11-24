@@ -125,5 +125,30 @@ namespace CharityLink.Controllers
 
             return Ok(commentDto);
         }
+
+        [HttpGet("get-parent-comment-by-postId/{PostId:int}")]
+        public async Task<ActionResult<IEnumerable<Comment>>> GetParentCommentsByPostId(int PostId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var comments = await _commentRepository.GetParentCommentByPostId(PostId);
+            var commentDto = comments.Select(c => c.ToCommentDto());
+
+            return Ok(commentDto);
+        }
+
+
+        [HttpGet("get-children-comment-by-parentId/{ParentCommentId:int}")]
+        public async Task<ActionResult<IEnumerable<Comment>>> GetChildrenCommentsByParentCommentId(int ParentCommentId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var comments = await _commentRepository.GetChildrenCommentByParentId(ParentCommentId);
+            var commentDto = comments.Select(c => c.ToCommentDto());
+
+            return Ok(commentDto);
+        }
     }
 }

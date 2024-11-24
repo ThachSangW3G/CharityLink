@@ -15,6 +15,9 @@ namespace CharityLink.Mappers
                 IsPublished = community.IsPublished,
                 AdminId = community.AdminId,
                 CreateDate = community.CreateDate,
+                StartDate = community.StartDate,
+                EndDate = community.EndDate,
+                TargetAmount = community.TargetAmount,
                 //Posts = community.Posts?.Select(p => p.ToPostDto()).ToList() ?? null,
                 //Donations = community.Donations?.Select(d => d.ToDonationDto()).ToList() ?? null,
                 //UserCommunities = community.UserCommunities?.Select(u => u.ToUserCommunityDto()).ToList() ?? null,
@@ -30,6 +33,9 @@ namespace CharityLink.Mappers
                 IsPublished= communityRequestDto.IsPublished,
                 AdminId= communityRequestDto.AdminId,
                 CreateDate= communityRequestDto.CreateDate,
+                StartDate= communityRequestDto.StartDate,
+                EndDate= communityRequestDto.EndDate,
+                TargetAmount= communityRequestDto.TargetAmount,
             };
         }
 
@@ -42,6 +48,9 @@ namespace CharityLink.Mappers
                 IsPublished= communityRequestDto.IsPublished,
                 AdminId= communityRequestDto.AdminId,
                 CreateDate= communityRequestDto.CreateDate,
+                StartDate= communityRequestDto.StartDate,
+                EndDate= communityRequestDto.EndDate,
+                TargetAmount = communityRequestDto.TargetAmount
             };
         }
     }

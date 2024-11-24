@@ -12,6 +12,7 @@ namespace CharityLink.Dtos.Comments
 
         public int PostId { get; set; }
         public DateTime CreateDate { get; set; }
+        public int? ParentCommentId { get; set; }
 
 
     }

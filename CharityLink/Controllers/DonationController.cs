@@ -109,5 +109,29 @@ namespace CharityLink.Controllers
 
             return Ok(donation);
         }
+
+
+        [HttpGet("get-donation-count/{CommunityId:int}")]
+        public async Task<ActionResult<int>> GetDonationCount([FromRoute] int CommunityId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            int count = await _donationRepository.GetDonationCount(CommunityId);
+
+            return Ok(count);
+        }
+
+        [HttpGet("get-contributors/{CommunityId:int}")]
+        public async Task<ActionResult<Donation>> GetContributors([FromRoute] int CommunityId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var contributors = await _donationRepository.GetContributor(CommunityId);
+            var contributorDto = contributors.Select(c => c.ToDonationDto());
+
+            return Ok(contributorDto);
+        }
     }
 }

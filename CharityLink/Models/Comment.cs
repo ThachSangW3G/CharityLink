@@ -21,5 +21,10 @@ namespace CharityLink.Models
         public Post Post { get; set; }
 
         public DateTime CreateDate { get; set; }
+        public int? ParentCommentId { get; set; }
+
+
+        public virtual Comment ParentComment { get; set; }
+        public virtual ICollection<Comment> Replies { get; set; }
     }
 }
