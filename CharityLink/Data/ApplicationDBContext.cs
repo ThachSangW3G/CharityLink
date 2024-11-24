@@ -84,25 +84,34 @@ namespace CharityLink.Data
     .OnDelete(DeleteBehavior.Cascade);
 
 
-            modelBuilder.Entity<Comment>()
-    .HasOne(c => c.Author)
-    .WithMany(u => u.Comments)
-    .HasForeignKey(c => c.UserId)
-    .OnDelete(DeleteBehavior.NoAction);
-
-
-            modelBuilder.Entity<Comment>()
-     .HasOne(c => c.Post)
-     .WithMany(p => p.Comments)
-     .HasForeignKey(c => c.PostId)
-     .OnDelete(DeleteBehavior.Cascade);
+         
 
             modelBuilder.Entity<Donation>()
         .Property(d => d.Amount)
         .HasColumnType("decimal(18,2)");
+
+
+            modelBuilder.Entity<Comment>()
+         .HasOne(c => c.ParentComment) // Quan hệ đến bình luận cha
+         .WithMany(c => c.Replies) // Quan hệ đến danh sách bình luận con
+         .HasForeignKey(c => c.ParentCommentId) // Khóa ngoại đến bình luận cha
+         .OnDelete(DeleteBehavior.NoAction); // Tắt cascade delete
+
+
+            modelBuilder.Entity<Comment>()
+    .HasOne(c => c.Post) // Quan hệ đến bài viết
+    .WithMany(p => p.Comments) // Quan hệ ngược lại
+    .HasForeignKey(c => c.PostId)
+    .OnDelete(DeleteBehavior.NoAction); // Tắt cascade delete
+
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.Author) // Quan hệ đến người dùng
+                .WithMany(u => u.Comments) // Quan hệ ngược lại
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.NoAction); // Tắt cascade delete
         }
 
-
+        
 
 
     }

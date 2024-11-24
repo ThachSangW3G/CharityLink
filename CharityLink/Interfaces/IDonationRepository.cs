@@ -9,5 +9,7 @@ namespace CharityLink.Interfaces
         Task<Donation> CreateAsync(Donation donation);
         Task<Donation?> UpdateAsync(int Id, Donation donation);
         Task<Donation?> DeleteAsync(int Id);
+        Task<int> GetDonationCount(int CommunityId);
+        Task<List<Donation>> GetContributor(int CommunityId);
     }
 }

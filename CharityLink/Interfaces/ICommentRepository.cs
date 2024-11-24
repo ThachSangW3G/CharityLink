@@ -10,5 +10,7 @@ namespace CharityLink.Interfaces
         Task<Comment?> UpdateAsync(int Id, Comment Comment);
         Task<Comment?> DeleteAsync(int Id);
         Task<List<Comment>> GetCommentsByPostId(int PostId);
+        Task<List<Comment>> GetParentCommentByPostId (int PostId);
+        Task<List<Comment>> GetChildrenCommentByParentId(int ParentCommentId);
     }
 }

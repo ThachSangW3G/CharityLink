@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CharityLink.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241102154203_Init")]
+    [Migration("20241123165445_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -40,6 +40,9 @@ namespace CharityLink.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("ParentCommentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
@@ -47,6 +50,8 @@ namespace CharityLink.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("CommentId");
+
+                    b.HasIndex("ParentCommentId");
 
                     b.HasIndex("PostId");
 
@@ -77,8 +82,17 @@ namespace CharityLink.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsPublished")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("TargetAmount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("CommunityId");
 
@@ -252,10 +266,15 @@ namespace CharityLink.Migrations
 
             modelBuilder.Entity("CharityLink.Models.Comment", b =>
                 {
+                    b.HasOne("CharityLink.Models.Comment", "ParentComment")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentCommentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("CharityLink.Models.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CharityLink.Models.User", "Author")
@@ -265,6 +284,8 @@ namespace CharityLink.Migrations
                         .IsRequired();
 
                     b.Navigation("Author");
+
+                    b.Navigation("ParentComment");
 
                     b.Navigation("Post");
                 });
@@ -365,6 +386,11 @@ namespace CharityLink.Migrations
                     b.Navigation("Community");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CharityLink.Models.Comment", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("CharityLink.Models.Community", b =>

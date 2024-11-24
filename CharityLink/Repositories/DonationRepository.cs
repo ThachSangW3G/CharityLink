@@ -45,6 +45,24 @@ namespace CharityLink.Repositories
             return await _dBContext.Donations.FirstOrDefaultAsync(c => c.DonationId == Id);
         }
 
+        public async Task<List<Donation>> GetContributor(int CommunityId)
+        {
+            return await _dBContext.Donations
+                .Where(d => d.CommunityId == CommunityId)
+                .GroupBy(d => d.UserId)
+                .Select(g => new Donation
+                {
+                    UserId = g.Key,
+                    Amount = g.Sum(d => d.Amount),
+                })
+                .OrderByDescending(c => c.Amount).ToListAsync();
+        }
+
+        public async Task<int> GetDonationCount(int CommunityId)
+        {
+            return await _dBContext.Donations.CountAsync(d => d.CommunityId == CommunityId);
+        }
+
         public async Task<Donation?> UpdateAsync(int Id, Donation donation)
         {
             var existingDonation = await _dBContext.Donations.FindAsync(Id);

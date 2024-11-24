@@ -14,7 +14,8 @@ namespace CharityLink.Mappers
                 UserId = comment.UserId,
                 PostId = comment.PostId,
                 Content = comment.Content,
-                CreateDate = comment.CreateDate
+                CreateDate = comment.CreateDate,
+                ParentCommentId = comment.ParentCommentId,
             };
         }
 
@@ -25,7 +26,8 @@ namespace CharityLink.Mappers
                 UserId = commentRequestDto.UserId,
                 PostId = commentRequestDto.PostId,
                 Content = commentRequestDto.Content,
-                CreateDate = commentRequestDto.CreateDate
+                CreateDate = commentRequestDto.CreateDate,
+                ParentCommentId = commentRequestDto.ParentCommentId,
             };
         }
 
@@ -36,7 +38,8 @@ namespace CharityLink.Mappers
                 UserId = commentRequestDto.UserId,
                 PostId = commentRequestDto.PostId,
                 Content = commentRequestDto.Content,
-                CreateDate = commentRequestDto.CreateDate
+                CreateDate = commentRequestDto.CreateDate,
+                 ParentCommentId = commentRequestDto.ParentCommentId,
             };
         }
     }

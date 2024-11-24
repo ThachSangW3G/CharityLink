@@ -14,5 +14,8 @@
 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public decimal TargetAmount { get; set; }
+
+        public int? ParentCommentId { get; set; }
     }
 }
