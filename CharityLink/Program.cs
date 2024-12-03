@@ -1,4 +1,5 @@
 using CharityLink.Data;
+using CharityLink.Hubs;
 using CharityLink.Interfaces;
 using CharityLink.Repositories;
 using CharityLink.Repository;
@@ -16,6 +17,7 @@ builder.Services.AddScoped<ILikeRepository, LikeRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDonationRepository, DonationRepository>();
 builder.Services.AddScoped<IUserCommunityRepository, UserCommunityRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 
 builder.Services.AddControllers();
@@ -27,6 +29,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -45,8 +49,11 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapHub<ChatHub>("/chatHub");
+app.MapHub<NotificationHub>("/notificationHub");
 
+app.MapControllers();
+app.UseStaticFiles();
 
 
 

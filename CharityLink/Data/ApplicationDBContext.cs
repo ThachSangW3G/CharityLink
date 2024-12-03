@@ -18,6 +18,7 @@ namespace CharityLink.Data
         public DbSet<Donation> Donations  { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<UserCommunity> UserCommunities { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

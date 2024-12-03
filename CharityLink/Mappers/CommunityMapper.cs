@@ -18,6 +18,7 @@ namespace CharityLink.Mappers
                 StartDate = community.StartDate,
                 EndDate = community.EndDate,
                 TargetAmount = community.TargetAmount,
+                ImageUrl = community.ImageUrl,
                 //Posts = community.Posts?.Select(p => p.ToPostDto()).ToList() ?? null,
                 //Donations = community.Donations?.Select(d => d.ToDonationDto()).ToList() ?? null,
                 //UserCommunities = community.UserCommunities?.Select(u => u.ToUserCommunityDto()).ToList() ?? null,
