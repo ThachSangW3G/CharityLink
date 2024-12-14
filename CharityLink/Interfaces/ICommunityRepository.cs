@@ -13,6 +13,7 @@ namespace CharityLink.Interfaces
         Task<List<Post>> GetPostByCommunityId(int CommunityId);
         Task<List<Donation>> GetDonationByCommunityId(int CommunityId);
         Task<decimal> GetAmountDonationForCommunity(int CommunityId);
+        Task<int> GetDonationCount(int CommunityId);
 
         Task<List<Community>> GetUpComing();
         Task<List<Community>> GetOnGoing();

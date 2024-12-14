@@ -147,5 +147,28 @@ namespace CharityLink.Controllers
             return Ok(user);
         }
 
+        [HttpGet("get-by-email")]
+        public async Task<ActionResult<User>> GetByEmail([FromQuery] string email)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var userDto = user.ToUserDto();
+
+            if (!string.IsNullOrEmpty(userDto.AvatarUrl))
+            {
+                userDto.AvatarUrl = $"{Request.Scheme}://{Request.Host}{userDto.AvatarUrl}";
+            }
+
+            return Ok(userDto);
+        }
+
+
     }
 }

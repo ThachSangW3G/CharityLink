@@ -15,10 +15,10 @@ namespace CharityLink.Models
 
         public string Password { get; set; }
 
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
  
-        public string AvatarUrl { get; set; }
+        public string? AvatarUrl { get; set; }
 
  
         public List<Like> Likes { get; set; }

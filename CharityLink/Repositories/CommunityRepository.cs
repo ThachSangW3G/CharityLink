@@ -61,6 +61,11 @@ namespace CharityLink.Repository
             return await _dBContext.Donations.Where(d => d.CommunityId == CommunityId).ToListAsync();
         }
 
+        public async Task<int> GetDonationCount(int CommunityId)
+        {
+            return await _dBContext.Donations.Where(d => d.CommunityId == CommunityId).CountAsync();
+        }
+
         public async Task<List<Community>> GetOnGoing()
         {
             var currentDate = DateTime.Now;

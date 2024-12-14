@@ -33,6 +33,7 @@ namespace CharityLink.Controllers
 
             var communities = await _communityRepository.GetAllAsync();
 
+
             var communityDto = communities.Select(community =>
             {
                 var dto = community.ToCommunityDto();
@@ -43,7 +44,20 @@ namespace CharityLink.Controllers
                 return dto;
             });
 
-            return Ok(communityDto);
+
+
+            // Tạo danh sách các tác vụ bất đồng bộ để lấy dữ liệu cần thiết
+            var tasks = communityDto.Select(async dto =>
+            {
+                dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
+                dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+                return dto;
+            }).ToList();
+
+            // Chờ tất cả các tác vụ hoàn thành
+            var updatedCommunityDtoList = await Task.WhenAll(tasks);
+
+            return Ok(updatedCommunityDtoList);
         }
 
 
