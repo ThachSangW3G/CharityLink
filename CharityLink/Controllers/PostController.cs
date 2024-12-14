@@ -31,7 +31,16 @@ namespace CharityLink.Controllers
 
             var posts = await _postRepository.GetAllAsync();
 
-            var postDto = posts.Select(c => c.ToPostDto());
+            var postDto = posts.Select(post =>
+            {
+                var dto = post.ToPostDto();
+                if (!string.IsNullOrEmpty(dto.ImageUrl))
+                {
+                    dto.ImageUrl = $"{Request.Scheme}://{Request.Host}{dto.ImageUrl}";
+                }
+
+                return dto;
+            });
 
             return Ok(postDto);
         }
@@ -49,19 +58,44 @@ namespace CharityLink.Controllers
                 return NotFound();
             }
 
+            var postDto = post.ToPostDto();
+
+            if (!string.IsNullOrEmpty(postDto.ImageUrl))
+            {
+                postDto.ImageUrl = $"{Request.Scheme}://{Request.Host}{postDto.ImageUrl}";
+            }
+
             return Ok(post.ToPostDto());
         }
 
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreatePostRequestDto postDto)
+        public async Task<ActionResult> Create([FromForm] CreatePostRequestDto postDto, IFormFile image)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            string imageUrl = string.Empty;
+            if (image != null && image.Length > 0)
+            {
+                var uploadsFolder = Path.Combine("wwwroot", "image_posts");
+                Directory.CreateDirectory(uploadsFolder);
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                imageUrl = $"/image_posts/{uniqueFileName}";
+            }
+
+
             var post = postDto.ToPostFromCreateDTO();
+            post.ImageUrl = imageUrl;
 
             await _postRepository.CreateAsync(post);
 

@@ -23,6 +23,11 @@ namespace CharityLink.Dtos.Communities
 
         public decimal TargetAmount { get; set; }
 
+        public string ImageUrl { get; set; }
+
+        public decimal CurrentAmount { get; set; }
+        public int DonationCount { get; set; }
+
 
 
     }

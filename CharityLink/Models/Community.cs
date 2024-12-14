@@ -26,6 +26,8 @@ namespace CharityLink.Models
 
         public decimal TargetAmount { get; set; }
 
+        public string ImageUrl { get; set; }
+
 
         public List<Post> Posts { get; set; }
         public List<Donation> Donations { get; set; }

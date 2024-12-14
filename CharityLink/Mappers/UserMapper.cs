@@ -25,7 +25,7 @@ namespace CharityLink.Mappers
                 Name = userRequestDto.Name,
                 Email = userRequestDto.Email,
                 PhoneNumber = userRequestDto.PhoneNumber,
-                AvatarUrl = userRequestDto.AvatarUrl,
+              
                 Password = userRequestDto.Password,
             };
         }
@@ -37,7 +37,7 @@ namespace CharityLink.Mappers
                 Name = userRequestDto.Name,
                 Email = userRequestDto.Email,
                 PhoneNumber = userRequestDto.PhoneNumber,
-                AvatarUrl = userRequestDto.AvatarUrl,
+           
                 Password = userRequestDto.Password,
             };
         }

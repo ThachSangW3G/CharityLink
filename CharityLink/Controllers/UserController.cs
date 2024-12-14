@@ -33,9 +33,17 @@ namespace CharityLink.Controllers
 
             var users = await _userRepository.GetAllAsync();
 
-            var userDto = users.Select(c => c.ToUserDto());
+            var userDtos = users.Select(user =>
+            {
+                var dto = user.ToUserDto();
+                if (!string.IsNullOrEmpty(dto.AvatarUrl))
+                {
+                    dto.AvatarUrl = $"{Request.Scheme}://{Request.Host}{dto.AvatarUrl}";
+                }
+                return dto;
+            });
 
-            return Ok(userDto);
+            return Ok(userDtos);
         }
 
 
@@ -51,19 +59,44 @@ namespace CharityLink.Controllers
                 return NotFound();
             }
 
-            return Ok(user.ToUserDto());
+            var userDto = user.ToUserDto();
+
+            if (!string.IsNullOrEmpty(userDto.AvatarUrl))
+            {
+                userDto.AvatarUrl = $"{Request.Scheme}://{Request.Host}{userDto.AvatarUrl}";
+            }
+
+            return Ok( userDto );
         }
 
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateUserRequestDto userRequestDto)
+        public async Task<ActionResult> Create([FromForm] CreateUserRequestDto userRequestDto, IFormFile avatar)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            string avatarUrl = string.Empty;
+            if (avatar != null && avatar.Length > 0)
+            {
+                var uploadsFolder = Path.Combine("wwwroot", "avatars");
+                Directory.CreateDirectory(uploadsFolder);
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(avatar.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using(var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await avatar.CopyToAsync(stream);
+                }
+
+                avatarUrl = $"/avatars/{uniqueFileName}";
+            }
+
             var user = userRequestDto.ToUserFromCreateDTO();
+
+            user.AvatarUrl = avatarUrl;
 
             await _userRepository.CreateAsync(user);
 
@@ -113,6 +146,29 @@ namespace CharityLink.Controllers
 
             return Ok(user);
         }
+
+        [HttpGet("get-by-email")]
+        public async Task<ActionResult<User>> GetByEmail([FromQuery] string email)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var userDto = user.ToUserDto();
+
+            if (!string.IsNullOrEmpty(userDto.AvatarUrl))
+            {
+                userDto.AvatarUrl = $"{Request.Scheme}://{Request.Host}{userDto.AvatarUrl}";
+            }
+
+            return Ok(userDto);
+        }
+
 
     }
 }

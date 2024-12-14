@@ -21,6 +21,8 @@ namespace CharityLink.Dtos.Posts
 
         public DateTime createDate { get; set; }
 
+        public string ImageUrl { get; set; }
+
        
     }
 }

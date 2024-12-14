@@ -1,5 +1,6 @@
 ﻿using CharityLink.Data;
 using CharityLink.Dtos.Communities;
+using CharityLink.Dtos.Users;
 using CharityLink.Interfaces;
 using CharityLink.Mappers;
 using CharityLink.Models;
@@ -32,9 +33,31 @@ namespace CharityLink.Controllers
 
             var communities = await _communityRepository.GetAllAsync();
 
-            var communityDto = communities.Select(c => c.ToCommunityDto());
 
-            return Ok(communityDto);
+            var communityDto = communities.Select(community =>
+            {
+                var dto = community.ToCommunityDto();
+                if (!string.IsNullOrEmpty(dto.ImageUrl))
+                {
+                    dto.ImageUrl = $"{Request.Scheme}://{Request.Host}{dto.ImageUrl}";
+                }
+                return dto;
+            });
+
+
+
+            // Tạo danh sách các tác vụ bất đồng bộ để lấy dữ liệu cần thiết
+            var tasks = communityDto.Select(async dto =>
+            {
+                dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
+                dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+                return dto;
+            }).ToList();
+
+            // Chờ tất cả các tác vụ hoàn thành
+            var updatedCommunityDtoList = await Task.WhenAll(tasks);
+
+            return Ok(updatedCommunityDtoList);
         }
 
 
@@ -50,19 +73,43 @@ namespace CharityLink.Controllers
                 return NotFound();
             }
 
-            return Ok(community.ToCommunityDto());
+            var communityDto = community.ToCommunityDto();
+
+            if (!string.IsNullOrEmpty(communityDto.ImageUrl))
+            {
+                communityDto.ImageUrl = $"{Request.Scheme}://{Request.Host}{communityDto.ImageUrl}";
+            }
+            return Ok(communityDto);
         }
 
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateCommunityRequestDto communityDto)
+        public async Task<ActionResult> Create([FromForm] CreateCommunityRequestDto communityDto, IFormFile image)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            string imageUrl = string.Empty;
+            if (image != null && image.Length > 0)
+            {
+                var uploadsFolder = Path.Combine("wwwroot", "image_communitys");
+                Directory.CreateDirectory(uploadsFolder);
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                imageUrl = $"/image_communitys/{uniqueFileName}";
+            }
+
             var community = communityDto.ToCommunityFromCreateDTO();
+
+            community.ImageUrl = imageUrl;
 
             await _communityRepository.CreateAsync(community);
 

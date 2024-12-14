@@ -39,11 +39,22 @@ namespace CharityLink.Repositories
             return await _dBContext.Users.ToListAsync();
         }
 
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await _dBContext.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
         public async Task<User?> GetByIdAsync(int Id)
         {
             return await _dBContext.Users.FirstOrDefaultAsync(c => c.UserId == Id);
         }
 
+        public async Task<User?> LoginByEmailAndPassword(string email, string password)
+        {
+            User? user = await _dBContext.Users.FirstOrDefaultAsync(c => c.Email == email && c.Password == password);
+            return user;
+        }
+        
         public async Task<User?> UpdateAsync(int Id, User User)
         {
             var existingUser = await _dBContext.Users.FindAsync(Id);

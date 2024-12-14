@@ -16,5 +16,8 @@ namespace CharityLink.Models
         public int UserId { get; set; }
      
         public User Recipient { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public bool IsRead { get; set; }
     }
 }
