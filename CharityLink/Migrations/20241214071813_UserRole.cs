@@ -5,21 +5,14 @@
 namespace CharityLink.Migrations
 {
     /// <inheritdoc />
-    public partial class AddImageUrl : Migration
+    public partial class UserRole : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "ImageUrl",
-                table: "Posts",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<string>(
-                name: "ImageUrl",
-                table: "Communities",
+                name: "Role",
+                table: "Users",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
@@ -29,12 +22,8 @@ namespace CharityLink.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ImageUrl",
-                table: "Posts");
-
-            migrationBuilder.DropColumn(
-                name: "ImageUrl",
-                table: "Communities");
+                name: "Role",
+                table: "Users");
         }
     }
 }
