@@ -6,6 +6,7 @@ using CharityLink.Mappers;
 using CharityLink.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace CharityLink.Controllers
 {
@@ -15,12 +16,14 @@ namespace CharityLink.Controllers
     {
         private readonly ApplicationDBContext _applicationDBContext;
         private readonly ICommunityRepository _communityRepository;
+        private readonly IConfiguration _configuration;
 
 
-        public CommunityController(ApplicationDBContext applicationDBContext, ICommunityRepository communityRepository)
+        public CommunityController(ApplicationDBContext applicationDBContext, ICommunityRepository communityRepository, IConfiguration configuration)
         {
             _applicationDBContext = applicationDBContext;
             _communityRepository = communityRepository;
+            _configuration = configuration;
         }
 
 
@@ -77,7 +80,9 @@ namespace CharityLink.Controllers
 
             if (!string.IsNullOrEmpty(communityDto.ImageUrl))
             {
-                communityDto.ImageUrl = $"{Request.Scheme}://{Request.Host}{communityDto.ImageUrl}";
+                //communityDto.ImageUrl = $"{Request.Scheme}://{Request.Host}{communityDto.ImageUrl}";
+                var ngrokUrl = _configuration.GetValue<string>("NgrokUrl");
+                communityDto.ImageUrl = $"{ngrokUrl}{communityDto.ImageUrl}";
             }
             return Ok(communityDto);
         }
