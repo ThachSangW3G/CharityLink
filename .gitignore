@@ -41,7 +41,7 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
-Migrations/
+CharityLink/Migrations/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
