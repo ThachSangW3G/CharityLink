@@ -5,6 +5,8 @@ namespace CharityLink.Interfaces
     public interface ICommunityRepository
     {
         Task<List<Community>> GetAllAsync ();
+
+        Task<List<Community>> GetAllNoPublic ();
         Task<Community?> GetByIdAsync(int Id);
         Task<Community> CreateAsync(Community community);
         Task<Community?> UpdateAsync(int Id, Community community);

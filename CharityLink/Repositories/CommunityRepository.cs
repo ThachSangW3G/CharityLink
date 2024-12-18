@@ -35,7 +35,12 @@ namespace CharityLink.Repository
 
         public async Task<List<Community>> GetAllAsync()
         {
-            return await _dBContext.Communities.ToListAsync();
+            return await _dBContext.Communities.Where(c=> c.IsPublished == true).ToListAsync();
+        }
+
+        public async Task<List<Community>> GetAllNoPublic()
+        {
+            return await _dBContext.Communities.Where(c=> c.IsPublished == false).ToListAsync();
         }
 
         public async Task<decimal> GetAmountDonationForCommunity(int CommunityId)

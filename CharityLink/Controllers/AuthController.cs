@@ -37,6 +37,7 @@ namespace CharityLink.Controllers
                 Name = dto.Name,
                 Email = dto.Email,
                 Password = dto.Password,
+                Role = "user"
             };
 
             await _userRepository.CreateAsync(user);

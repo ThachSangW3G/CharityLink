@@ -15,13 +15,16 @@ namespace CharityLink.Controllers
     {
         private readonly ApplicationDBContext _applicationDBContext;
         private readonly ICommunityRepository _communityRepository;
+        private readonly IConfiguration _configuration;
 
 
-        public CommunityController(ApplicationDBContext applicationDBContext, ICommunityRepository communityRepository)
+        public CommunityController(ApplicationDBContext applicationDBContext, ICommunityRepository communityRepository, IConfiguration configuration)
         {
             _applicationDBContext = applicationDBContext;
             _communityRepository = communityRepository;
+            _configuration = configuration;
         }
+
 
 
         [HttpGet]
@@ -33,13 +36,51 @@ namespace CharityLink.Controllers
 
             var communities = await _communityRepository.GetAllAsync();
 
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
 
             var communityDto = communities.Select(community =>
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
-                    dto.ImageUrl = $"{Request.Scheme}://{Request.Host}{dto.ImageUrl}";
+                    dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
+                }
+                return dto;
+            });
+
+
+
+            // Tạo danh sách các tác vụ bất đồng bộ để lấy dữ liệu cần thiết
+            var tasks = communityDto.Select(async dto =>
+            {
+                dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
+                dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+                return dto;
+            }).ToList();
+
+            // Chờ tất cả các tác vụ hoàn thành
+            var updatedCommunityDtoList = await Task.WhenAll(tasks);
+
+            return Ok(updatedCommunityDtoList);
+        }
+
+        [HttpGet("/api/Community/Nopublic")]
+        public async Task<ActionResult<IEnumerable<Community>>> GetCommunitiesNoPublic()
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var communities = await _communityRepository.GetAllNoPublic();
+
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+
+            var communityDto = communities.Select(community =>
+            {
+                var dto = community.ToCommunityDto();
+                if (!string.IsNullOrEmpty(dto.ImageUrl))
+                {
+                    dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
                 return dto;
             });
@@ -72,13 +113,20 @@ namespace CharityLink.Controllers
             {
                 return NotFound();
             }
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
             var communityDto = community.ToCommunityDto();
 
             if (!string.IsNullOrEmpty(communityDto.ImageUrl))
             {
-                communityDto.ImageUrl = $"{Request.Scheme}://{Request.Host}{communityDto.ImageUrl}";
+                communityDto.ImageUrl = $"{baseUrl}{communityDto.ImageUrl}";
             }
+
+            communityDto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(communityDto.CommunityId);
+
+            communityDto.DonationCount = await _communityRepository.GetDonationCount(communityDto.CommunityId);
+            
+
             return Ok(communityDto);
         }
 
@@ -207,8 +255,33 @@ namespace CharityLink.Controllers
             
             var communities = await _communityRepository.GetUpComing();
 
-            var communiyDto = communities.Select(c => c.ToCommunityDto()).ToList();
-            return Ok(communiyDto);
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+
+            var communityDto = communities.Select(community =>
+            {
+                var dto = community.ToCommunityDto();
+                if (!string.IsNullOrEmpty(dto.ImageUrl))
+                {
+                    dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
+                }
+                return dto;
+            });
+
+
+
+            // Tạo danh sách các tác vụ bất đồng bộ để lấy dữ liệu cần thiết
+            var tasks = communityDto.Select(async dto =>
+            {
+                dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
+                dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+                return dto;
+            }).ToList();
+
+            // Chờ tất cả các tác vụ hoàn thành
+            var updatedCommunityDtoList = await Task.WhenAll(tasks);
+
+            return Ok(updatedCommunityDtoList);
         }
 
         [HttpGet("get-ongoing")]
@@ -218,8 +291,33 @@ namespace CharityLink.Controllers
 
             var communities = await _communityRepository.GetOnGoing();
 
-            var communiyDto = communities.Select(c => c.ToCommunityDto()).ToList();
-            return Ok(communiyDto);
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+
+            var communityDto = communities.Select(community =>
+            {
+                var dto = community.ToCommunityDto();
+                if (!string.IsNullOrEmpty(dto.ImageUrl))
+                {
+                    dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
+                }
+                return dto;
+            });
+
+
+
+            // Tạo danh sách các tác vụ bất đồng bộ để lấy dữ liệu cần thiết
+            var tasks = communityDto.Select(async dto =>
+            {
+                dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
+                dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+                return dto;
+            }).ToList();
+
+            // Chờ tất cả các tác vụ hoàn thành
+            var updatedCommunityDtoList = await Task.WhenAll(tasks);
+
+            return Ok(updatedCommunityDtoList);
         }
 
         [HttpGet("get-completed")]
@@ -229,8 +327,33 @@ namespace CharityLink.Controllers
 
             var communities = await _communityRepository.GetCompleted();
 
-            var communiyDto = communities.Select(c => c.ToCommunityDto()).ToList();
-            return Ok(communiyDto);
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+
+            var communityDto = communities.Select(community =>
+            {
+                var dto = community.ToCommunityDto();
+                if (!string.IsNullOrEmpty(dto.ImageUrl))
+                {
+                    dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
+                }
+                return dto;
+            });
+
+
+
+            // Tạo danh sách các tác vụ bất đồng bộ để lấy dữ liệu cần thiết
+            var tasks = communityDto.Select(async dto =>
+            {
+                dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
+                dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+                return dto;
+            }).ToList();
+
+            // Chờ tất cả các tác vụ hoàn thành
+            var updatedCommunityDtoList = await Task.WhenAll(tasks);
+
+            return Ok(updatedCommunityDtoList);
         }
 
 
