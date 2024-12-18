@@ -17,6 +17,8 @@ namespace CharityLink.Dtos.Users
 
         public string AvatarUrl { get; set; }
 
+        public string Role { get; set; }
+
 
     }
 }

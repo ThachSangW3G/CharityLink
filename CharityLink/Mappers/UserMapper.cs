@@ -16,6 +16,7 @@ namespace CharityLink.Mappers
                 PhoneNumber = user.PhoneNumber,
                 AvatarUrl = user.AvatarUrl,
                 Password = user.Password,
+                Role = user.Role,
             };
         }
         public static User ToUserFromCreateDTO(this CreateUserRequestDto userRequestDto)
