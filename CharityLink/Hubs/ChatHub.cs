@@ -6,6 +6,13 @@ namespace CharityLink.Hubs
 {
     public class ChatHub : Hub
     {
+        private readonly IMessageRepository _messageRepository;
+
+        public ChatHub(IMessageRepository messageRepository)
+        {
+            _messageRepository = messageRepository;
+        }
+
         public async Task SendMessage(int senderId, int receiverId, string content)
         {
             var message = new Message
@@ -16,19 +23,55 @@ namespace CharityLink.Hubs
                 SentAt = DateTime.UtcNow
             };
 
-            var messageRepository = Context.GetHttpContext().RequestServices.GetService<IMessageRepository>();
-            await messageRepository.CreateMessageAsync(message);
 
-            await Clients.User(receiverId.ToString()).SendAsync("ReceiveMessage", senderId, content, message.SentAt);
+            // Lưu tin nhắn vào database
+            await _messageRepository.CreateMessageAsync(message);
+
+            // Gửi tin nhắn đến người nhận
+            await Clients.All
+                .SendAsync("ReceiveMessage", senderId, receiverId, content, message.SentAt);
+        }
+
+
+        public async Task SendMessageWithImage(int senderId, int receiverId, string base64Image)
+        {
+            var message = new Message
+            {
+                SenderId = senderId,
+                ReceiverId = receiverId,
+                Content = "",
+                SentAt = DateTime.UtcNow
+            };
+
+            string imageUrl = string.Empty;
+            if (!string.IsNullOrEmpty(base64Image))
+            {
+                var uploadsFolder = Path.Combine("wwwroot", "messages");
+                Directory.CreateDirectory(uploadsFolder);
+                var uniqueFileName = Guid.NewGuid().ToString();
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                var imageBytes = Convert.FromBase64String(base64Image);
+                await File.WriteAllBytesAsync(filePath, imageBytes);
+
+                imageUrl = $"/messages/{uniqueFileName}";
+            }
+
+            message.ImageUrl = imageUrl;
+
+            // Lưu tin nhắn vào database
+            await _messageRepository.CreateMessageAsync(message);
+
+            // Gửi tin nhắn đến người nhận
+            await Clients.All
+                .SendAsync("ReceiveMessage", senderId, receiverId, "", message.SentAt);
         }
 
         public override Task OnConnectedAsync()
         {
-            // Map connectionId với userId để gửi tin nhắn trực tiếp
             var userId = Context.GetHttpContext().Request.Query["userId"];
             if (!string.IsNullOrEmpty(userId))
             {
-                // Dùng UserId làm Group cho SignalR
                 Groups.AddToGroupAsync(Context.ConnectionId, userId);
             }
             return base.OnConnectedAsync();

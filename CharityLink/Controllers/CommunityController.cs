@@ -6,6 +6,7 @@ using CharityLink.Mappers;
 using CharityLink.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace CharityLink.Controllers
 {

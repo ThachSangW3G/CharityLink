@@ -54,6 +54,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddSignalR();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:3000", "https://e606-42-112-244-29.ngrok-free.app/")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
