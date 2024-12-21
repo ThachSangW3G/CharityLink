@@ -131,41 +131,60 @@ namespace CharityLink.Controllers
             return Ok(communityDto);
         }
 
-
         [HttpPost]
         public async Task<ActionResult> Create([FromForm] CreateCommunityRequestDto communityDto, IFormFile image)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
-            }
-
-            string imageUrl = string.Empty;
-            if (image != null && image.Length > 0)
-            {
-                var uploadsFolder = Path.Combine("wwwroot", "image_communitys");
-                Directory.CreateDirectory(uploadsFolder);
-                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                if (!ModelState.IsValid)
                 {
-                    await image.CopyToAsync(stream);
+                    var errors = ModelState.Values
+                                            .SelectMany(v => v.Errors)
+                                            .Select(e => e.ErrorMessage)
+                                            .ToList();
+
+                    return BadRequest(new { message = "Dữ liệu không hợp lệ", errors });
                 }
 
-                imageUrl = $"/image_communitys/{uniqueFileName}";
+                string imageUrl = string.Empty;
+
+                if (image != null && image.Length > 0)
+                {
+                    try
+                    {
+                        var uploadsFolder = Path.Combine("wwwroot", "image_communitys");
+                        Directory.CreateDirectory(uploadsFolder);
+                        var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await image.CopyToAsync(stream);
+                        }
+
+                        imageUrl = $"/image_communitys/{uniqueFileName}";
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500, new { message = "Lỗi khi xử lý file ảnh", details = ex.Message });
+                    }
+                }
+
+                var community = communityDto.ToCommunityFromCreateDTO();
+                community.ImageUrl = imageUrl;
+
+                await _communityRepository.CreateAsync(community);
+
+                return Ok(new { message = "Dự án đã được tạo thành công", data = community });
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
 
-            var community = communityDto.ToCommunityFromCreateDTO();
-
-            community.ImageUrl = imageUrl;
-
-            await _communityRepository.CreateAsync(community);
-
-            return Ok();
-
-
+                return StatusCode(500, new { message = "Có lỗi xảy ra trên server", details = ex.Message });
+            }
         }
+
 
         [HttpPut]
         [Route("{Id:int}")]

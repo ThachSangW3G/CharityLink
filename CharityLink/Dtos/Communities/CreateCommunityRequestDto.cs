@@ -17,7 +17,10 @@ namespace CharityLink.Dtos.Communities
         public DateTime CreateDate { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public decimal TargetAmount { get; set; }
+        public decimal? TargetAmount { get; set; }
+        public string Type { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set;}
 
     }
 }
