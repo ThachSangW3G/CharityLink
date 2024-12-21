@@ -19,9 +19,9 @@ namespace CharityLink.Mappers
                 EndDate = community.EndDate,
                 TargetAmount = community.TargetAmount,
                 ImageUrl = community.ImageUrl,
-                //Posts = community.Posts?.Select(p => p.ToPostDto()).ToList() ?? null,
-                //Donations = community.Donations?.Select(d => d.ToDonationDto()).ToList() ?? null,
-                //UserCommunities = community.UserCommunities?.Select(u => u.ToUserCommunityDto()).ToList() ?? null,
+                Type = community.Type,
+                Longitude = community.Longitude,
+                Latitude = community.Latitude,
             };
         }
 
@@ -37,6 +37,9 @@ namespace CharityLink.Mappers
                 StartDate= communityRequestDto.StartDate,
                 EndDate= communityRequestDto.EndDate,
                 TargetAmount= communityRequestDto.TargetAmount,
+                Type = communityRequestDto.Type,
+                Latitude = communityRequestDto.Latitude,
+                Longitude = communityRequestDto.Longitude,
             };
         }
 
