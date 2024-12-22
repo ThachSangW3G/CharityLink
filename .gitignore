@@ -41,6 +41,8 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
+CharityLink/Migrations/
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -361,3 +363,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+CharityLink/Migrations/
+
