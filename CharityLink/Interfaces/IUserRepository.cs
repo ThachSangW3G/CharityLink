@@ -11,5 +11,6 @@ namespace CharityLink.Interfaces
         Task<User?> DeleteAsync(int Id);
         Task<User?> GetByEmailAsync(string email);
         Task<User?> LoginByEmailAndPassword(string email, string password);
+        Task<User?> ChangeAvatar(int userId, string avatarUrl);
     }
 }

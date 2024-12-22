@@ -170,5 +170,36 @@ namespace CharityLink.Controllers
         }
 
 
+        [HttpPut]
+        [Route("change-avatar/{userId:int}")]
+        public async Task<ActionResult<User?>> ChangeAvatar([FromRoute] int userId, IFormFile avatar)
+        {
+            string avatarUrl = string.Empty;
+            if (avatar != null && avatar.Length > 0)
+            {
+                var uploadsFolder = Path.Combine("wwwroot", "avatars");
+                Directory.CreateDirectory(uploadsFolder);
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(avatar.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await avatar.CopyToAsync(stream);
+                }
+
+                avatarUrl = $"/avatars/{uniqueFileName}";
+            }
+
+            var user = await _userRepository.ChangeAvatar(userId, avatarUrl);
+
+            if (user == null)
+            {
+                return NotFound();
+            }else
+            {
+                return Ok(user.ToUserDto());
+            }
+        }
+
     }
 }

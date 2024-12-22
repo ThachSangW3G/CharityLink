@@ -14,6 +14,20 @@ namespace CharityLink.Repositories
             _dBContext = dbContext;
         }
 
+        public async Task<User?> ChangeAvatar(int userId, string avatarUrl)
+        {
+            var user = await _dBContext.Users.FindAsync(userId);
+
+            if (user != null)
+            {
+                user.AvatarUrl = avatarUrl;
+                await _dBContext.SaveChangesAsync();
+                return user;
+            }
+            return null;
+           
+        }
+
         public async Task<User> CreateAsync(User User)
         {
             await _dBContext.Users.AddAsync(User);
