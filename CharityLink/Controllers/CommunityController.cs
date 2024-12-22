@@ -290,18 +290,13 @@ namespace CharityLink.Controllers
 
 
 
-            // Tạo danh sách các tác vụ bất đồng bộ để lấy dữ liệu cần thiết
-            var tasks = communityDto.Select(async dto =>
+            foreach (var dto in communityDto)
             {
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
-                return dto;
-            }).ToList();
+            }
 
-            // Chờ tất cả các tác vụ hoàn thành
-            var updatedCommunityDtoList = await Task.WhenAll(tasks);
-
-            return Ok(updatedCommunityDtoList);
+            return Ok(communityDto);
         }
 
         [HttpGet("get-ongoing")]
@@ -326,18 +321,14 @@ namespace CharityLink.Controllers
 
 
 
-            // Tạo danh sách các tác vụ bất đồng bộ để lấy dữ liệu cần thiết
-            var tasks = communityDto.Select(async dto =>
+
+            foreach (var dto in communityDto)
             {
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
-                return dto;
-            }).ToList();
+            }
 
-            // Chờ tất cả các tác vụ hoàn thành
-            var updatedCommunityDtoList = await Task.WhenAll(tasks);
-
-            return Ok(updatedCommunityDtoList);
+            return Ok(communityDto);
         }
 
         [HttpGet("get-completed")]
@@ -362,18 +353,14 @@ namespace CharityLink.Controllers
 
 
 
-            // Tạo danh sách các tác vụ bất đồng bộ để lấy dữ liệu cần thiết
-            var tasks = communityDto.Select(async dto =>
+
+            foreach (var dto in communityDto)
             {
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
-                return dto;
-            }).ToList();
+            }
 
-            // Chờ tất cả các tác vụ hoàn thành
-            var updatedCommunityDtoList = await Task.WhenAll(tasks);
-
-            return Ok(updatedCommunityDtoList);
+            return Ok(communityDto);
         }
 
 
