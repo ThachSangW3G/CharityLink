@@ -11,7 +11,7 @@
 
         public string PhoneNumber { get; set; }
 
-
+        public DateTime DayOfBirth { get; set; }
       
     }
 }

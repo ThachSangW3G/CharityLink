@@ -17,6 +17,7 @@ namespace CharityLink.Mappers
                 AvatarUrl = user.AvatarUrl,
                 Password = user.Password,
                 Role = user.Role,
+                DayOfBirth = user.DayOfBirth,
             };
         }
         public static User ToUserFromCreateDTO(this CreateUserRequestDto userRequestDto)
@@ -26,7 +27,7 @@ namespace CharityLink.Mappers
                 Name = userRequestDto.Name,
                 Email = userRequestDto.Email,
                 PhoneNumber = userRequestDto.PhoneNumber,
-              
+                DayOfBirth = userRequestDto.DayOfBirth,
                 Password = userRequestDto.Password,
             };
         }

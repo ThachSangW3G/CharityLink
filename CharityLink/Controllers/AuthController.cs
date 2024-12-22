@@ -1,5 +1,6 @@
 ﻿using CharityLink.Dtos.Authentications;
 using CharityLink.Interfaces;
+using CharityLink.Mappers;
 using CharityLink.Models;
 using CharityLink.Repositories;
 using CharityLink.Sevices;
@@ -37,12 +38,22 @@ namespace CharityLink.Controllers
                 Name = dto.Name,
                 Email = dto.Email,
                 Password = dto.Password,
-                Role = "user"
+                Role = "user",
+                PhoneNumber = dto.PhoneNumber,
+                DayOfBirth = dto.DayOfBirth,
             };
 
-            await _userRepository.CreateAsync(user);
+            var newUser = await _userRepository.CreateAsync(user);
 
-            return Ok("User registered successfully.");
+            if (newUser != null)
+            {
+                return Ok(newUser.ToUserDto());
+            }
+            else
+            {
+                return BadRequest("Đăng ký không thành công");
+            }
+            
         }
 
 

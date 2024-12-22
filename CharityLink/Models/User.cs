@@ -22,6 +22,7 @@ namespace CharityLink.Models
 
  
         public string? AvatarUrl { get; set; }
+        public DateTime DayOfBirth { get; set; }
 
  
         public List<Like> Likes { get; set; }
