@@ -21,7 +21,13 @@ namespace CharityLink.Dtos.Posts
 
         public DateTime createDate { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
+
+        public int LikeCount { get; set; }
+        public int CommentCount { get; set; }
+
+        public String UserName { get; set; }
+        public String AvatarUrl { get; set; }
 
        
     }

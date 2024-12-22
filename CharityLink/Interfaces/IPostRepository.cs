@@ -9,5 +9,7 @@ namespace CharityLink.Interfaces
         Task<Post> CreateAsync(Post Post);
         Task<Post?> UpdateAsync(int Id, Post Post);
         Task<Post?> DeleteAsync(int Id);
+        Task<List<Post>> GetPostByCommunity(int CommunityId);
+       
     }
 }

@@ -14,6 +14,11 @@ namespace CharityLink.Repositories
             _dBContext = dbContext;
         }
 
+        public async Task<int> CountLike(int PostId)
+        {
+            return await _dBContext.Likes.Where(l => l.PostId == PostId).CountAsync();
+        }
+
         public async Task<Like> CreateAsync(Like Like)
         {
             await _dBContext.Likes.AddAsync(Like);
@@ -62,6 +67,30 @@ namespace CharityLink.Repositories
 
             await _dBContext.SaveChangesAsync();
             return existingLike;
+        }
+
+
+        public async Task LikePost(int userId, int postId)
+        {
+            var existingLike = await _dBContext.Likes.FirstOrDefaultAsync(p => p.PostId == postId && p.UserId == userId);
+            if (existingLike != null)
+            {
+                _dBContext.Remove(existingLike);
+                await _dBContext.SaveChangesAsync();
+            }else
+            {
+                var like = new Like
+                {
+                    UserId = userId,
+                    PostId = postId,
+                    LikeAt = DateTime.Now,
+                };
+
+                 _dBContext.Add(like);
+                await _dBContext.SaveChangesAsync();
+            }
+
+
         }
     }
 }

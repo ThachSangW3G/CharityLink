@@ -12,5 +12,7 @@ namespace CharityLink.Interfaces
         Task<List<Comment>> GetCommentsByPostId(int PostId);
         Task<List<Comment>> GetParentCommentByPostId (int PostId);
         Task<List<Comment>> GetChildrenCommentByParentId(int ParentCommentId);
+        Task<int> CountComment(int PostId);
+       
     }
 }

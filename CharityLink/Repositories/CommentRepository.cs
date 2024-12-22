@@ -15,6 +15,11 @@ namespace CharityLink.Repositories
             _dBContext = dbContext;
         }
 
+        public async Task<int> CountComment(int PostId)
+        {
+            return await _dBContext.Comments.Where(c => c.PostId == PostId).CountAsync();
+        }
+
         public async Task<Comment> CreateAsync(Comment Comment)
         {
             await _dBContext.Comments.AddAsync(Comment);
@@ -55,7 +60,7 @@ namespace CharityLink.Repositories
 
         public async Task<List<Comment>> GetCommentsByPostId(int PostId)
         {
-            return await _dBContext.Comments.Where(c => c.PostId == PostId).ToListAsync();
+            return await _dBContext.Comments.Where(c => c.PostId == PostId).OrderByDescending(c => c.CreateDate).ToListAsync();
         }
 
         public async Task<List<Comment>> GetParentCommentByPostId(int PostId)
