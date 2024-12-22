@@ -44,6 +44,13 @@ namespace CharityLink.Repositories
             return await _dBContext.Posts.FirstOrDefaultAsync(c => c.PostId == Id);
         }
 
+        public async Task<List<Post>> GetPostByCommunity(int CommunityId)
+        {
+            return await _dBContext.Posts.Where(p => p.CommunityID == CommunityId).ToListAsync();
+        }
+
+    
+
         public async Task<Post?> UpdateAsync(int Id, Post Post)
         {
             var existingPost = await _dBContext.Posts.FindAsync(Id);

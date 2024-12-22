@@ -24,7 +24,7 @@ namespace CharityLink.Models
 
         public DateTime createDate { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public List<Comment> Comments { get; set; }
 

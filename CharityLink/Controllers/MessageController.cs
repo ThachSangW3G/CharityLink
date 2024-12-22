@@ -96,7 +96,7 @@ namespace CharityLink.Controllers
                 if (user != null)
                 {
                     dto.UserName = user.Name;
-                    var ngrokUrl = _configuration.GetValue<string>("NgrokUrl");
+                    var ngrokUrl = _configuration.GetValue<string>("NgrokBaseUrl");
                     dto.AvatarUrl = $"{ngrokUrl}{user.AvatarUrl}";
                 }
 

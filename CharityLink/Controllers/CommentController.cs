@@ -15,11 +15,13 @@ namespace CharityLink.Controllers
     {
         private readonly ApplicationDBContext _applicationDBContext;
         private readonly ICommentRepository _commentRepository;
+        private readonly IUserRepository _userRepository;
 
-        public CommentController(ApplicationDBContext applicationDBContext, ICommentRepository commentRepository)
+        public CommentController(ApplicationDBContext applicationDBContext, ICommentRepository commentRepository, IUserRepository userRepository)
         {
             _applicationDBContext = applicationDBContext;
             _commentRepository = commentRepository;
+            _userRepository=userRepository;
         }
 
         [HttpGet]
@@ -123,7 +125,22 @@ namespace CharityLink.Controllers
 
             var commentDto = comments.Select(c => c.ToCommentDto());
 
-            return Ok(commentDto);
+            var UpdatedCommentDto = new List<CommentDto>();
+            
+            foreach (var comment in commentDto)
+            {
+                var user = await _userRepository.GetByIdAsync(comment.UserId);
+
+                if (user != null)
+                {
+                    comment.UserName = user.Name;
+                    comment.AvatarUrl = user.AvatarUrl;
+                }
+                
+                UpdatedCommentDto.Add(comment);
+            }
+
+            return Ok(UpdatedCommentDto);
         }
 
         [HttpGet("get-parent-comment-by-postId/{PostId:int}")]

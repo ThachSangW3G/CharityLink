@@ -127,5 +127,15 @@ namespace CharityLink.Controllers
 
             return Ok(likeDto);
         }
+
+        [HttpPost]
+        [Route("like-post/{userId:int}/{postId:int}")]
+        public async Task<ActionResult> LikePost([FromRoute] int userId, int postId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            await _likeRepository.LikePost(userId, postId);
+            return Ok();
+        }
     }
 }

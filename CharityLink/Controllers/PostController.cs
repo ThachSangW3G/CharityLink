@@ -15,11 +15,19 @@ namespace CharityLink.Controllers
     {
         private readonly ApplicationDBContext _applicationDBContext;
         private readonly IPostRepository _postRepository;
+        private readonly ILikeRepository _likeRepository;
+        private readonly ICommentRepository _commentRepository;
+        private readonly IConfiguration _configuration;
+        private readonly IUserRepository _userRepository;
 
-        public PostController(ApplicationDBContext applicationDBContext, IPostRepository postRepository)
+        public PostController(ApplicationDBContext applicationDBContext, IPostRepository postRepository, ILikeRepository likeRepository, ICommentRepository commentRepository, IConfiguration configuration, IUserRepository userRepository)
         {
             _applicationDBContext = applicationDBContext;
             _postRepository = postRepository;
+            _likeRepository=likeRepository;
+            _commentRepository=commentRepository;
+            _configuration=configuration;
+            _userRepository=userRepository;
         }
 
         [HttpGet]
@@ -33,16 +41,36 @@ namespace CharityLink.Controllers
 
             var postDto = posts.Select(post =>
             {
-                var dto = post.ToPostDto();
-                if (!string.IsNullOrEmpty(dto.ImageUrl))
-                {
-                    dto.ImageUrl = $"{Request.Scheme}://{Request.Host}{dto.ImageUrl}";
-                }
-
+                var dto = post.ToPostDto();  
                 return dto;
             });
 
-            return Ok(postDto);
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+            var UpdatePostDtoList = new List<PostDto>();
+
+            foreach (var post in postDto)
+            {
+                post.LikeCount = await _likeRepository.CountLike(post.PostId);
+                post.CommentCount = await _commentRepository.CountComment(post.PostId);
+                
+                var user = await _userRepository.GetByIdAsync(post.PostId);
+
+                if (!string.IsNullOrEmpty(post.ImageUrl))
+                {
+                    post.ImageUrl = $"{baseUrl}{post.ImageUrl}"; 
+                }
+
+                if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
+                {
+                    post.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
+                    post.UserName = user.Name;
+                }
+
+                UpdatePostDtoList.Add(post);
+            }
+
+            return Ok(UpdatePostDtoList);
         }
 
 
@@ -59,13 +87,68 @@ namespace CharityLink.Controllers
             }
 
             var postDto = post.ToPostDto();
+            postDto.LikeCount = await _likeRepository.CountLike(post.PostId);
+            postDto.CommentCount = await _commentRepository.CountComment(post.PostId);
+
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
             if (!string.IsNullOrEmpty(postDto.ImageUrl))
             {
-                postDto.ImageUrl = $"{Request.Scheme}://{Request.Host}{postDto.ImageUrl}";
+                postDto.ImageUrl = $"{baseUrl}{post.ImageUrl}";
             }
 
-            return Ok(post.ToPostDto());
+            var user = await _userRepository.GetByIdAsync(post.PostId);
+
+
+            if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
+            {
+                postDto.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
+                postDto.UserName = user.Name;
+            }
+
+            return Ok(postDto);
+        }
+
+
+        [HttpGet("get-posts-by-community/{communityId:int}")]
+        public async Task<ActionResult<IEnumerable<Post>>> GetPostsByCommunity([FromRoute]  int communityId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var posts = await _postRepository.GetPostByCommunity(communityId);
+            var postDto = posts.Select(post =>
+            {
+                var dto = post.ToPostDto();
+                return dto;
+            });
+
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+            var UpdatePostDtoList = new List<PostDto>();
+
+            foreach (var post in postDto)
+            {
+                post.LikeCount = await _likeRepository.CountLike(post.PostId);
+                post.CommentCount = await _commentRepository.CountComment(post.PostId);
+
+                var user = await _userRepository.GetByIdAsync(post.PostId);
+
+                if (!string.IsNullOrEmpty(post.ImageUrl))
+                {
+                    post.ImageUrl = $"{baseUrl}{post.ImageUrl}";
+                }
+
+                if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
+                {
+                    post.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
+                    post.UserName = user.Name;
+                }
+
+                UpdatePostDtoList.Add(post);
+            }
+
+            return Ok(UpdatePostDtoList);
         }
 
 
