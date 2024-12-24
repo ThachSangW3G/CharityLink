@@ -6,6 +6,7 @@ using CharityLink.Mappers;
 using CharityLink.Models;
 using CharityLink.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 namespace CharityLink.Controllers
 {
@@ -16,11 +17,13 @@ namespace CharityLink.Controllers
 
         private readonly ApplicationDBContext _applicationDBContext;
         private readonly IUserRepository _userRepository;
+        private readonly IConfiguration _configuration;
 
-        public UserController(ApplicationDBContext applicationDBContext, IUserRepository userRepository)
+        public UserController(ApplicationDBContext applicationDBContext, IUserRepository userRepository, IConfiguration configuration)
         {
             _applicationDBContext = applicationDBContext;
             _userRepository = userRepository;
+            _configuration = configuration;
         }
 
 
@@ -192,12 +195,19 @@ namespace CharityLink.Controllers
 
             var user = await _userRepository.ChangeAvatar(userId, avatarUrl);
 
+            
+
+
+
             if (user == null)
             {
                 return NotFound();
             }else
             {
-                return Ok(user.ToUserDto());
+                var userDto = user.ToUserDto();
+                var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+                userDto.AvatarUrl = $"{baseUrl}{userDto.AvatarUrl}";
+                return Ok(userDto);
             }
         }
 

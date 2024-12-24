@@ -132,17 +132,22 @@ namespace CharityLink.Controllers
                 post.LikeCount = await _likeRepository.CountLike(post.PostId);
                 post.CommentCount = await _commentRepository.CountComment(post.PostId);
 
-                var user = await _userRepository.GetByIdAsync(post.PostId);
+                var user = await _userRepository.GetByIdAsync(post.UserId);
 
                 if (!string.IsNullOrEmpty(post.ImageUrl))
                 {
                     post.ImageUrl = $"{baseUrl}{post.ImageUrl}";
                 }
 
+                if (user != null && !string.IsNullOrEmpty(user.Name))
+                {
+                    post.UserName = user.Name;
+                }
+
                 if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
                 {
                     post.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
-                    post.UserName = user.Name;
+                    
                 }
 
                 UpdatePostDtoList.Add(post);
@@ -153,7 +158,7 @@ namespace CharityLink.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromForm] CreatePostRequestDto postDto, IFormFile image)
+        public async Task<ActionResult<Post>> Create([FromForm] CreatePostRequestDto postDto, IFormFile image)
         {
             if (!ModelState.IsValid)
             {
@@ -180,9 +185,9 @@ namespace CharityLink.Controllers
             var post = postDto.ToPostFromCreateDTO();
             post.ImageUrl = imageUrl;
 
-            await _postRepository.CreateAsync(post);
+            var postResult = await _postRepository.CreateAsync(post);
 
-            return Ok();
+            return Ok(postResult.ToPostDto());
 
 
         }

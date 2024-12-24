@@ -67,7 +67,7 @@ namespace CharityLink.Controllers
 
             await _commentRepository.CreateAsync(comment);
 
-            return Ok();
+            return Ok(comment.ToCommentDto());
 
 
         }
