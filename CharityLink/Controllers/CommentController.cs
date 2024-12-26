@@ -139,9 +139,9 @@ namespace CharityLink.Controllers
                 {
                     comment.UserName = user.Name;       
 
-                    if (!string.IsNullOrEmpty(comment.AvatarUrl))
+                    if (!string.IsNullOrEmpty(user.AvatarUrl))
                     {
-                        comment.AvatarUrl = $"{baseUrl}{comment.AvatarUrl}";
+                        comment.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
                     }
                     
                 }

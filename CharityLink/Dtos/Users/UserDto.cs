@@ -19,6 +19,8 @@ namespace CharityLink.Dtos.Users
 
         public string Role { get; set; }
         public DateTime DayOfBirth { get; set; }
+        public int CountDonate { get; set; }
+        public int CountPosts { get; set; }
 
 
     }

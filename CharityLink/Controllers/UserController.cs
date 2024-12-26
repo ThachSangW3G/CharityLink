@@ -18,12 +18,16 @@ namespace CharityLink.Controllers
         private readonly ApplicationDBContext _applicationDBContext;
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
+        private readonly IPostRepository _postRepository;
+        private readonly IDonationRepository _donationRepository;
 
-        public UserController(ApplicationDBContext applicationDBContext, IUserRepository userRepository, IConfiguration configuration)
+        public UserController(ApplicationDBContext applicationDBContext, IUserRepository userRepository, IConfiguration configuration, IPostRepository postRepository, IDonationRepository donationRepository)
         {
             _applicationDBContext = applicationDBContext;
             _userRepository = userRepository;
             _configuration = configuration;
+            _postRepository = postRepository;
+            _donationRepository = donationRepository;
         }
 
 
@@ -36,17 +40,30 @@ namespace CharityLink.Controllers
 
             var users = await _userRepository.GetAllAsync();
 
+            var updatedUserDtos = new List<UserDto>();
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+
             var userDtos = users.Select(user =>
             {
                 var dto = user.ToUserDto();
                 if (!string.IsNullOrEmpty(dto.AvatarUrl))
                 {
-                    dto.AvatarUrl = $"{Request.Scheme}://{Request.Host}{dto.AvatarUrl}";
+
+                    dto.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
                 }
                 return dto;
             });
 
-            return Ok(userDtos);
+            foreach (var userDto in userDtos)
+            {
+                userDto.CountPosts = await _postRepository.GetCountPostByUser(userDto.UserId);
+                userDto.CountDonate = await _donationRepository.GetCountDonationByUser(userDto.UserId);
+
+                updatedUserDtos.Add(userDto);
+            }
+
+            return Ok(updatedUserDtos);
         }
 
 
@@ -64,10 +81,15 @@ namespace CharityLink.Controllers
 
             var userDto = user.ToUserDto();
 
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
             if (!string.IsNullOrEmpty(userDto.AvatarUrl))
             {
-                userDto.AvatarUrl = $"{Request.Scheme}://{Request.Host}{userDto.AvatarUrl}";
+                userDto.AvatarUrl = $"{baseUrl}{userDto.AvatarUrl}";
             }
+
+            userDto.CountPosts = await _postRepository.GetCountPostByUser(userDto.UserId);
+            userDto.CountDonate = await _donationRepository.GetCountDonationByUser(userDto.UserId);
 
             return Ok( userDto );
         }
@@ -171,6 +193,9 @@ namespace CharityLink.Controllers
                
             }
 
+            userDto.CountPosts = await _postRepository.GetCountPostByUser(userDto.UserId);
+            userDto.CountDonate = await _donationRepository.GetCountDonationByUser(userDto.UserId);
+
             return Ok(userDto);
         }
 
@@ -209,6 +234,10 @@ namespace CharityLink.Controllers
                 var userDto = user.ToUserDto();
                 var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
                 userDto.AvatarUrl = $"{baseUrl}{userDto.AvatarUrl}";
+
+                userDto.CountPosts = await _postRepository.GetCountPostByUser(userDto.UserId);
+                userDto.CountDonate = await _donationRepository.GetCountDonationByUser(userDto.UserId);
+
                 return Ok(userDto);
             }
         }

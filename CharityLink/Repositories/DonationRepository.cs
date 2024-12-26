@@ -58,6 +58,11 @@ namespace CharityLink.Repositories
                 .OrderByDescending(c => c.Amount).ToListAsync();
         }
 
+        public async Task<int> GetCountDonationByUser(int userId)
+        {
+            return await _dBContext.Donations.Where(d => d.UserId == userId).CountAsync();
+        }
+
         public async Task<int> GetDonationCount(int CommunityId)
         {
             return await _dBContext.Donations.CountAsync(d => d.CommunityId == CommunityId);
