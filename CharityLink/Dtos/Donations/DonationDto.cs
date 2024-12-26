@@ -15,5 +15,7 @@ namespace CharityLink.Dtos.Donations
         public int CommunityId { get; set; }
 
         public DateTime donateDate { get; set; }
+        public string AvatarUrl { get; set; }
+        public string UserName { get; set; }
     }
 }

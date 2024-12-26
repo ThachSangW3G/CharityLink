@@ -166,7 +166,9 @@ namespace CharityLink.Controllers
 
             if (!string.IsNullOrEmpty(userDto.AvatarUrl))
             {
-                userDto.AvatarUrl = $"{Request.Scheme}://{Request.Host}{userDto.AvatarUrl}";
+                var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+                userDto.AvatarUrl = $"{baseUrl}{userDto.AvatarUrl}";
+               
             }
 
             return Ok(userDto);

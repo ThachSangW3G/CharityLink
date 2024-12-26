@@ -29,6 +29,8 @@ namespace CharityLink.Dtos.Posts
         public String UserName { get; set; }
         public String AvatarUrl { get; set; }
 
+        public String CommunityName { get; set; }
+        public bool IsLiked { get; set; }
        
     }
 }

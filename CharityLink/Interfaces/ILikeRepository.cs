@@ -12,5 +12,6 @@ namespace CharityLink.Interfaces
         Task<List<Like>> GetLikesByPostId(int PostId);
         Task<int> CountLike(int PostId);
         Task LikePost(int userId, int postId);
+        Task<bool> HasLikesByPostId(int userId, int post);
     }
 }
