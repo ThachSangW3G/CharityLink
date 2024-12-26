@@ -44,6 +44,11 @@ namespace CharityLink.Repositories
             return await _dBContext.Posts.FirstOrDefaultAsync(c => c.PostId == Id);
         }
 
+        public async Task<int> GetCountPostByUser(int userId)
+        {
+            return await _dBContext.Posts.Where(p => p.UserId == userId).CountAsync();
+        }
+
         public async Task<List<Post>> GetPostByCommunity(int CommunityId)
         {
             return await _dBContext.Posts.Where(p => p.CommunityID == CommunityId).ToListAsync();

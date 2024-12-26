@@ -11,5 +11,6 @@ namespace CharityLink.Interfaces
         Task<Donation?> DeleteAsync(int Id);
         Task<int> GetDonationCount(int CommunityId);
         Task<List<Donation>> GetContributor(int CommunityId);
+        Task<int> GetCountDonationByUser (int userId);
     }
 }

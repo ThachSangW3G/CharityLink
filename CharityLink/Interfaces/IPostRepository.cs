@@ -12,5 +12,6 @@ namespace CharityLink.Interfaces
         Task<List<Post>> GetPostByCommunity(int CommunityId);
         Task<List<Post>> GetPostByUser(int userId);
        
+        Task<int> GetCountPostByUser(int userId);
     }
 }
