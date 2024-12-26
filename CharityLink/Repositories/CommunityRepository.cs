@@ -33,6 +33,8 @@ namespace CharityLink.Repository
             return community;
         }
 
+
+
         public async Task<List<Community>> GetAllAsync()
         {
             return await _dBContext.Communities.Where(c=> c.IsPublished == true).ToListAsync();
@@ -41,6 +43,20 @@ namespace CharityLink.Repository
         public async Task<List<Community>> GetAllNoPublic()
         {
             return await _dBContext.Communities.Where(c=> c.IsPublished == false).ToListAsync();
+        }
+
+        public async Task<List<Community>> GetCommunitiesByAdminIdNoPublic(int AdminId)
+        {
+            return await _dBContext.Communities
+                .Where(c => c.IsPublished == false && c.AdminId == AdminId)
+                .ToListAsync();
+        }
+
+        public async Task<List<Community>> GetCommunitiesByAdminId(int AdminId)
+        {
+            return await _dBContext.Communities
+                .Where(c => c.AdminId == AdminId && c.IsPublished == true)
+                .ToListAsync();
         }
 
         public async Task<decimal> GetAmountDonationForCommunity(int CommunityId)
@@ -58,7 +74,7 @@ namespace CharityLink.Repository
         public async Task<List<Community>> GetCompleted()
         {
             var currentDate = DateTime.Now;
-            return await _dBContext.Communities.Where(c => c.EndDate < currentDate).ToListAsync();
+            return await _dBContext.Communities.Where(c => c.EndDate < currentDate && c.IsPublished == true).ToListAsync();
         }
 
         public async Task<List<Donation>> GetDonationByCommunityId(int CommunityId)
@@ -74,7 +90,7 @@ namespace CharityLink.Repository
         public async Task<List<Community>> GetOnGoing()
         {
             var currentDate = DateTime.Now;
-            return await _dBContext.Communities.Where(c => c.StartDate <= currentDate && c.EndDate >= currentDate).ToListAsync();
+            return await _dBContext.Communities.Where(c => c.StartDate <= currentDate && c.EndDate >= currentDate && c.IsPublished == true).ToListAsync();
         }
 
         public async Task<List<Post>> GetPostByCommunityId(int CommunityId)
@@ -85,7 +101,7 @@ namespace CharityLink.Repository
         public async Task<List<Community>> GetUpComing()
         {
             var currentDate = DateTime.Now;
-            return await _dBContext.Communities.Where(c => c.StartDate > currentDate).ToListAsync();
+            return await _dBContext.Communities.Where(c => c.StartDate > currentDate && c.IsPublished == true).ToListAsync();
         }
 
         public async Task<Community?> UpdateAsync(int Id, Community community)
@@ -103,6 +119,21 @@ namespace CharityLink.Repository
 
             await _dBContext.SaveChangesAsync();
             return existingCommunity;
+        }
+
+        public async Task<bool> UpdateIsPublishedAsync(int Id, bool isPublished)
+        {
+            var community = await _dBContext.Communities.FirstOrDefaultAsync(c => c.CommunityId == Id);
+            if (community == null)
+            {
+                return false;
+            }
+
+            community.IsPublished = isPublished;
+            _dBContext.Communities.Update(community);
+
+            await _dBContext.SaveChangesAsync();
+            return true;
         }
     }
 }
