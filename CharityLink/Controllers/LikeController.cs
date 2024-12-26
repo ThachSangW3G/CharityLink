@@ -115,7 +115,7 @@ namespace CharityLink.Controllers
 
 
         [HttpGet("{PostId:int}/likes")]
-        public async Task<ActionResult<IEnumerable<Comment>>> GetLikesByPostId(int PostId)
+        public async Task<ActionResult<IEnumerable<Like>>> GetLikesByPostId(int PostId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

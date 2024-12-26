@@ -19,8 +19,9 @@ namespace CharityLink.Controllers
         private readonly ICommentRepository _commentRepository;
         private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepository;
+        private readonly ICommunityRepository _communityRepository;
 
-        public PostController(ApplicationDBContext applicationDBContext, IPostRepository postRepository, ILikeRepository likeRepository, ICommentRepository commentRepository, IConfiguration configuration, IUserRepository userRepository)
+        public PostController(ApplicationDBContext applicationDBContext, IPostRepository postRepository, ILikeRepository likeRepository, ICommentRepository commentRepository, IConfiguration configuration, IUserRepository userRepository, ICommunityRepository communityRepository)
         {
             _applicationDBContext = applicationDBContext;
             _postRepository = postRepository;
@@ -28,6 +29,7 @@ namespace CharityLink.Controllers
             _commentRepository=commentRepository;
             _configuration=configuration;
             _userRepository=userRepository;
+            _communityRepository=communityRepository;
         }
 
         [HttpGet]
@@ -53,7 +55,10 @@ namespace CharityLink.Controllers
             {
                 post.LikeCount = await _likeRepository.CountLike(post.PostId);
                 post.CommentCount = await _commentRepository.CountComment(post.PostId);
-                
+                var community = await _communityRepository.GetByIdAsync(post.CommunityID);
+
+                post.CommunityName = community.CommunityName;
+
                 var user = await _userRepository.GetByIdAsync(post.PostId);
 
                 if (!string.IsNullOrEmpty(post.ImageUrl))
@@ -74,8 +79,8 @@ namespace CharityLink.Controllers
         }
 
 
-        [HttpGet("{Id:int}")]
-        public async Task<ActionResult<Post>> GetPost([FromRoute] int Id)
+        [HttpGet("{Id:int}/{userId:int}")]
+        public async Task<ActionResult<Post>> GetPost([FromRoute] int Id, int userId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -89,8 +94,15 @@ namespace CharityLink.Controllers
             var postDto = post.ToPostDto();
             postDto.LikeCount = await _likeRepository.CountLike(post.PostId);
             postDto.CommentCount = await _commentRepository.CountComment(post.PostId);
+            postDto.IsLiked = await _likeRepository.HasLikesByPostId(userId, post.PostId);
+
+            var community = await _communityRepository.GetByIdAsync(post.CommunityID);
+
+            postDto.CommunityName = community.CommunityName;
 
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+
 
             if (!string.IsNullOrEmpty(postDto.ImageUrl))
             {
@@ -110,8 +122,8 @@ namespace CharityLink.Controllers
         }
 
 
-        [HttpGet("get-posts-by-community/{communityId:int}")]
-        public async Task<ActionResult<IEnumerable<Post>>> GetPostsByCommunity([FromRoute]  int communityId)
+        [HttpGet("get-posts-by-community/{communityId:int}/{userId:int}")]
+        public async Task<ActionResult<IEnumerable<Post>>> GetPostsByCommunity([FromRoute]  int communityId, int userId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -131,18 +143,79 @@ namespace CharityLink.Controllers
             {
                 post.LikeCount = await _likeRepository.CountLike(post.PostId);
                 post.CommentCount = await _commentRepository.CountComment(post.PostId);
+                post.IsLiked = await _likeRepository.HasLikesByPostId(userId, post.PostId);
 
-                var user = await _userRepository.GetByIdAsync(post.PostId);
+                var community = await _communityRepository.GetByIdAsync(post.CommunityID);
+
+                post.CommunityName = community.CommunityName;
+
+                var user = await _userRepository.GetByIdAsync(post.UserId);
 
                 if (!string.IsNullOrEmpty(post.ImageUrl))
                 {
                     post.ImageUrl = $"{baseUrl}{post.ImageUrl}";
                 }
 
+                if (user != null && !string.IsNullOrEmpty(user.Name))
+                {
+                    post.UserName = user.Name;
+                }
+
                 if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
                 {
                     post.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
+                    
+                }
+
+                UpdatePostDtoList.Add(post);
+            }
+
+            return Ok(UpdatePostDtoList);
+        }
+
+        [HttpGet("get-posts-by-user/{userId:int}/{myId:int}")]
+        public async Task<ActionResult<IEnumerable<Post>>> GetPostsByUser([FromRoute] int userId, int myId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var posts = await _postRepository.GetPostByUser(userId);
+            var postDto = posts.Select(post =>
+            {
+                var dto = post.ToPostDto();
+                return dto;
+            });
+
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+            var UpdatePostDtoList = new List<PostDto>();
+
+            foreach (var post in postDto)
+            {
+                post.LikeCount = await _likeRepository.CountLike(post.PostId);
+                post.CommentCount = await _commentRepository.CountComment(post.PostId);
+                post.IsLiked = await _likeRepository.HasLikesByPostId(myId, post.PostId);
+
+                var community = await _communityRepository.GetByIdAsync(post.CommunityID);
+
+                post.CommunityName = community.CommunityName;
+
+                var user = await _userRepository.GetByIdAsync(post.UserId);
+
+                if (!string.IsNullOrEmpty(post.ImageUrl))
+                {
+                    post.ImageUrl = $"{baseUrl}{post.ImageUrl}";
+                }
+
+                if (user != null && !string.IsNullOrEmpty(user.Name))
+                {
                     post.UserName = user.Name;
+                }
+
+                if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
+                {
+                    post.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
+
                 }
 
                 UpdatePostDtoList.Add(post);
@@ -152,8 +225,9 @@ namespace CharityLink.Controllers
         }
 
 
+
         [HttpPost]
-        public async Task<ActionResult> Create([FromForm] CreatePostRequestDto postDto, IFormFile image)
+        public async Task<ActionResult<Post>> Create([FromForm] CreatePostRequestDto postDto, IFormFile image)
         {
             if (!ModelState.IsValid)
             {
@@ -180,9 +254,9 @@ namespace CharityLink.Controllers
             var post = postDto.ToPostFromCreateDTO();
             post.ImageUrl = imageUrl;
 
-            await _postRepository.CreateAsync(post);
+            var postResult = await _postRepository.CreateAsync(post);
 
-            return Ok();
+            return Ok(postResult.ToPostDto());
 
 
         }
