@@ -14,12 +14,16 @@ namespace CharityLink.Controllers
     {
         private readonly ApplicationDBContext _applicationDBContext;
         private readonly IDonationRepository _donationRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IConfiguration _configuration;
 
 
-        public DonationController(ApplicationDBContext applicationDBContext, IDonationRepository donationRepository)
+        public DonationController(ApplicationDBContext applicationDBContext, IDonationRepository donationRepository, IUserRepository userRepository, IConfiguration configuration)
         {
             _applicationDBContext = applicationDBContext;
             _donationRepository = donationRepository;
+            _userRepository = userRepository;
+            _configuration = configuration;
         }
 
 
@@ -131,7 +135,26 @@ namespace CharityLink.Controllers
             var contributors = await _donationRepository.GetContributor(CommunityId);
             var contributorDto = contributors.Select(c => c.ToDonationDto());
 
-            return Ok(contributorDto);
+            var updatedContributors = new List<DonationDto>();
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+            foreach (var contributor in contributorDto)
+            {
+                var user = await _userRepository.GetByIdAsync(contributor.UserId);
+
+                if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
+                {
+                    contributor.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
+                }
+                if(user != null)
+                {
+                    contributor.UserName = user.Name;
+                }
+
+                updatedContributors.Add(contributor);
+            }
+
+            return Ok(updatedContributors);
         }
     }
 }

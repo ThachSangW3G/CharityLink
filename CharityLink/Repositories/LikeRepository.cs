@@ -92,5 +92,10 @@ namespace CharityLink.Repositories
 
 
         }
+
+        public async Task<bool> HasLikesByPostId(int userId, int postId)
+        {
+            return await _dBContext.Likes.Where(l => l.PostId.Equals(postId) && l.UserId.Equals(userId)).AnyAsync();
+        }
     }
 }

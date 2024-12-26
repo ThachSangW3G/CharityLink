@@ -49,7 +49,10 @@ namespace CharityLink.Repositories
             return await _dBContext.Posts.Where(p => p.CommunityID == CommunityId).ToListAsync();
         }
 
-    
+        public async Task<List<Post>> GetPostByUser(int userId)
+        {
+            return await _dBContext.Posts.Where(p => p.UserId == userId).ToListAsync();
+        }
 
         public async Task<Post?> UpdateAsync(int Id, Post Post)
         {

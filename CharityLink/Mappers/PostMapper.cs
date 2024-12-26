@@ -15,6 +15,7 @@ namespace CharityLink.Mappers
                 UserId = post.UserId,
                 CommunityID = post.CommunityID,
                 createDate = post.createDate,
+                ImageUrl = post.ImageUrl
                 //Comments = post.Comments.Select(c => c.ToCommentDto()).ToList(),
                 //Likes = post.Likes.Select(l => l.ToLikeDto()).ToList(),
             };
