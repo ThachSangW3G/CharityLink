@@ -59,12 +59,23 @@ namespace CharityLink.Repository
                 .ToListAsync();
         }
 
+        public async Task<int> GetDonationCount(int CommunityId)
+        {
+            return await _dBContext.Donations
+                .Where(d => d.CommunityId == CommunityId)
+                .AsNoTracking()  // Tránh theo dõi đối tượng
+                .CountAsync();
+        }
+
         public async Task<decimal> GetAmountDonationForCommunity(int CommunityId)
         {
             return await _dBContext.Donations
                 .Where(d => d.CommunityId == CommunityId)
+                .AsNoTracking()  // Tránh theo dõi đối tượng
                 .SumAsync(d => d.Amount);
         }
+
+
 
         public async Task<Community?> GetByIdAsync(int Id)
         {
@@ -82,10 +93,6 @@ namespace CharityLink.Repository
             return await _dBContext.Donations.Where(d => d.CommunityId == CommunityId).ToListAsync();
         }
 
-        public async Task<int> GetDonationCount(int CommunityId)
-        {
-            return await _dBContext.Donations.Where(d => d.CommunityId == CommunityId).CountAsync();
-        }
 
         public async Task<List<Community>> GetOnGoing()
         {

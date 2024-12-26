@@ -39,26 +39,25 @@ namespace CharityLink.Controllers
 
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
+            var communityDtoList = new List<CommunityDto>();
 
-            var communityDto = communities.Select(community =>
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
 
         [HttpGet("/api/Community/Nopublic")]
@@ -70,25 +69,25 @@ namespace CharityLink.Controllers
 
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
+            var communityDtoList = new List<CommunityDto>();
 
-            var communityDto = communities.Select(community =>
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
 
 
@@ -101,26 +100,25 @@ namespace CharityLink.Controllers
 
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
+            var communityDtoList = new List<CommunityDto>();
 
-            var communityDto = communities.Select(community =>
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
 
 
@@ -133,26 +131,25 @@ namespace CharityLink.Controllers
 
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
+            var communityDtoList = new List<CommunityDto>();
 
-            var communityDto = communities.Select(community =>
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
 
 
@@ -331,25 +328,25 @@ namespace CharityLink.Controllers
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
 
-            var communityDto = communities.Select(community =>
+            var communityDtoList = new List<CommunityDto>();
+
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
 
         [HttpGet("get-ongoing")]
@@ -358,31 +355,29 @@ namespace CharityLink.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var communities = await _communityRepository.GetOnGoing();
-
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
+            var communityDtoList = new List<CommunityDto>();
 
-            var communityDto = communities.Select(community =>
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
+
 
         [HttpGet("get-completed")]
         public async Task<ActionResult<IEnumerable<Community>>> GetCompleted()
@@ -394,26 +389,25 @@ namespace CharityLink.Controllers
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
 
-            var communityDto = communities.Select(community =>
+            var communityDtoList = new List<CommunityDto>();
+
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
 
         // API để cập nhật isPublished = true
