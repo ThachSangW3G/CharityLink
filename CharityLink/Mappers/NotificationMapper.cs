@@ -15,7 +15,10 @@ namespace CharityLink.Mappers
                 Content = notification.Content,
                 IsRead = notification.IsRead,
                 CreatedAt = notification.CreatedAt,
-
+                ComunityId = notification.ComunityId,
+                PostId = notification.PostId,
+                SenderId = notification.SenderId,
+                Type = notification.Type,
             };
         }
 
@@ -28,6 +31,10 @@ namespace CharityLink.Mappers
                 Content = notificationDto.Content,
                 IsRead = notificationDto.IsRead,
                 CreatedAt = notificationDto.CreatedAt,
+                ComunityId=notificationDto.ComunityId,
+                PostId=notificationDto.PostId,
+                SenderId=notificationDto.SenderId,
+                Type = notificationDto.Type,
             };
         }
     }
