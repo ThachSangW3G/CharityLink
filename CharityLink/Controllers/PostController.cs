@@ -69,6 +69,10 @@ namespace CharityLink.Controllers
                 if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
                 {
                     post.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
+                    
+                }
+                if (user != null && !string.IsNullOrEmpty(user.Name))
+                {
                     post.UserName = user.Name;
                 }
 
@@ -115,6 +119,10 @@ namespace CharityLink.Controllers
             if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
             {
                 postDto.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
+
+            }
+            if (user != null && !string.IsNullOrEmpty(user.Name))
+            {
                 postDto.UserName = user.Name;
             }
 
