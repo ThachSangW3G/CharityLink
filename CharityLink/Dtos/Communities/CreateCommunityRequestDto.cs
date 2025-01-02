@@ -1,5 +1,6 @@
 ﻿using CharityLink.Dtos.Donations;
 using CharityLink.Dtos.Posts;
+using CharityLink.Models;
 
 namespace CharityLink.Dtos.Communities
 {
@@ -10,7 +11,7 @@ namespace CharityLink.Dtos.Communities
 
         public string Description { get; set; }
 
-        public bool IsPublished { get; set; }
+        public PublishStatus PublishStatus { get; set; }
 
         public int AdminId { get; set; }
 

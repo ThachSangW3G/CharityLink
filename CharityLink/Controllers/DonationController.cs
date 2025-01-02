@@ -70,7 +70,7 @@ namespace CharityLink.Controllers
 
             await _donationRepository.CreateAsync(donation);
 
-            return Ok();
+            return Ok(donation);
 
 
         }

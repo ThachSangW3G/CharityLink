@@ -39,26 +39,25 @@ namespace CharityLink.Controllers
 
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
+            var communityDtoList = new List<CommunityDto>();
 
-            var communityDto = communities.Select(community =>
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
 
         [HttpGet("/api/Community/Nopublic")]
@@ -70,25 +69,55 @@ namespace CharityLink.Controllers
 
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
+            var communityDtoList = new List<CommunityDto>();
 
-            var communityDto = communities.Select(community =>
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
+        }
+
+        [HttpGet("/api/Community/Rejected")]
+        public async Task<ActionResult<IEnumerable<Community>>> GetCommunitiesRejected()
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var communities = await _communityRepository.GetCommunitiesRejected();
+
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+            var communityDtoList = new List<CommunityDto>();
+
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
+            {
+                var dto = community.ToCommunityDto();
+                if (!string.IsNullOrEmpty(dto.ImageUrl))
+                {
+                    dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
+                }
+
+                // Thực hiện lần lượt các thao tác bất đồng bộ
+                dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
+                dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
+            }
+
+            return Ok(communityDtoList);
         }
 
 
@@ -101,26 +130,25 @@ namespace CharityLink.Controllers
 
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
+            var communityDtoList = new List<CommunityDto>();
 
-            var communityDto = communities.Select(community =>
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
 
 
@@ -133,26 +161,55 @@ namespace CharityLink.Controllers
 
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
+            var communityDtoList = new List<CommunityDto>();
 
-            var communityDto = communities.Select(community =>
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
+        }
+
+        [HttpGet("{AdminId}/get-community-byAdminId-rejected")]
+        public async Task<ActionResult<IEnumerable<Community>>> GetCommunitiesByAdminIdRejected(int AdminId)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var communities = await _communityRepository.GetCommunitiesByAdminIdRejected(AdminId);
+
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+            var communityDtoList = new List<CommunityDto>();
+
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
+            {
+                var dto = community.ToCommunityDto();
+                if (!string.IsNullOrEmpty(dto.ImageUrl))
+                {
+                    dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
+                }
+
+                // Thực hiện lần lượt các thao tác bất đồng bộ
+                dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
+                dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
+            }
+
+            return Ok(communityDtoList);
         }
 
 
@@ -331,25 +388,25 @@ namespace CharityLink.Controllers
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
 
-            var communityDto = communities.Select(community =>
+            var communityDtoList = new List<CommunityDto>();
+
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
 
         [HttpGet("get-ongoing")]
@@ -358,31 +415,29 @@ namespace CharityLink.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var communities = await _communityRepository.GetOnGoing();
-
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
+            var communityDtoList = new List<CommunityDto>();
 
-            var communityDto = communities.Select(community =>
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
+
 
         [HttpGet("get-completed")]
         public async Task<ActionResult<IEnumerable<Community>>> GetCompleted()
@@ -394,34 +449,33 @@ namespace CharityLink.Controllers
             var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
 
-            var communityDto = communities.Select(community =>
+            var communityDtoList = new List<CommunityDto>();
+
+            // Thực hiện tuần tự các thao tác bất đồng bộ để tránh lỗi DbContext
+            foreach (var community in communities)
             {
                 var dto = community.ToCommunityDto();
                 if (!string.IsNullOrEmpty(dto.ImageUrl))
                 {
                     dto.ImageUrl = $"{baseUrl}{dto.ImageUrl}";
                 }
-                return dto;
-            });
 
-
-
-
-            foreach (var dto in communityDto)
-            {
+                // Thực hiện lần lượt các thao tác bất đồng bộ
                 dto.CurrentAmount = await _communityRepository.GetAmountDonationForCommunity(dto.CommunityId);
                 dto.DonationCount = await _communityRepository.GetDonationCount(dto.CommunityId);
+
+                communityDtoList.Add(dto);
             }
 
-            return Ok(communityDto);
+            return Ok(communityDtoList);
         }
 
-        // API để cập nhật isPublished = true
+        // API để cập nhật trạng thái thành "Approved"
         [HttpPut("{id}/publish")]
         public async Task<IActionResult> PublishCommunity(int id)
         {
             // Gọi hàm trong Repository để cập nhật trạng thái
-            var isSuccess = await _communityRepository.UpdateIsPublishedAsync(id, true);
+            var isSuccess = await _communityRepository.UpdatePublishStatusAsync(id, PublishStatus.Approved);
 
             if (!isSuccess)
             {
@@ -431,12 +485,27 @@ namespace CharityLink.Controllers
             return Ok(new { message = "Community published successfully." });
         }
 
-        // API để cập nhật isPublished = false
+        // API để cập nhật trạng thái thành "Rejected"
+        [HttpPut("{id}/reject")]
+        public async Task<IActionResult> RejectCommunity(int id)
+        {
+            // Gọi hàm trong Repository để cập nhật trạng thái
+            var isSuccess = await _communityRepository.UpdatePublishStatusAsync(id, PublishStatus.Rejected);
+
+            if (!isSuccess)
+            {
+                return NotFound(new { message = "Community not found." });
+            }
+
+            return Ok(new { message = "Community rejected successfully." });
+        }
+
+        // API để cập nhật trạng thái thành "Pending"
         [HttpPut("{id}/unpublish")]
         public async Task<IActionResult> UnpublishCommunity(int id)
         {
             // Gọi hàm trong Repository để cập nhật trạng thái
-            var isSuccess = await _communityRepository.UpdateIsPublishedAsync(id, false);
+            var isSuccess = await _communityRepository.UpdatePublishStatusAsync(id, PublishStatus.Pending);
 
             if (!isSuccess)
             {

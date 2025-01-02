@@ -13,7 +13,7 @@ namespace CharityLink.Models
 
         public string Description { get; set; }
 
-        public bool IsPublished { get; set; }
+        public PublishStatus PublishStatus { get; set; }
 
         public int AdminId { get; set; }
 
@@ -40,4 +40,11 @@ namespace CharityLink.Models
 
         public List<UserCommunity> UserCommunities { get; set; }
     }
+    public enum PublishStatus
+    {
+        Pending = 0, // Chờ duyệt
+        Approved = 1, // Đã duyệt
+        Rejected = 2,  // Đã bị từ chối
+    }
+
 }
