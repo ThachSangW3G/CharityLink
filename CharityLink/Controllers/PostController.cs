@@ -241,6 +241,7 @@ namespace CharityLink.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var baseUrl = _configuration["NgrokBaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
 
             string imageUrl = string.Empty;
             if (image != null && image.Length > 0)
@@ -262,10 +263,30 @@ namespace CharityLink.Controllers
             var post = postDto.ToPostFromCreateDTO();
             post.ImageUrl = imageUrl;
 
+
             var postResult = await _postRepository.CreateAsync(post);
 
-            return Ok(postResult.ToPostDto());
+            var postReturn = postResult.ToPostDto();
 
+            var user = await _userRepository.GetByIdAsync(post.UserId);
+
+            if (!string.IsNullOrEmpty(postReturn.ImageUrl))
+            {
+                postReturn.ImageUrl = $"{baseUrl}{postReturn.ImageUrl}";
+            }
+
+            if (user != null && !string.IsNullOrEmpty(user.Name))
+            {
+                postReturn.UserName = user.Name;
+            }
+
+            if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
+            {
+               postReturn.AvatarUrl = $"{baseUrl}{user.AvatarUrl}";
+
+            }
+
+            return Ok(postReturn);
 
         }
 
