@@ -20,8 +20,9 @@ namespace CharityLink.Controllers
         private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepository;
         private readonly ICommunityRepository _communityRepository;
+        private readonly IDonationRepository _donationRepository;
 
-        public PostController(ApplicationDBContext applicationDBContext, IPostRepository postRepository, ILikeRepository likeRepository, ICommentRepository commentRepository, IConfiguration configuration, IUserRepository userRepository, ICommunityRepository communityRepository)
+        public PostController(ApplicationDBContext applicationDBContext, IPostRepository postRepository, ILikeRepository likeRepository, ICommentRepository commentRepository, IConfiguration configuration, IUserRepository userRepository, ICommunityRepository communityRepository, IDonationRepository donationRepository)
         {
             _applicationDBContext = applicationDBContext;
             _postRepository = postRepository;
@@ -30,6 +31,7 @@ namespace CharityLink.Controllers
             _configuration=configuration;
             _userRepository=userRepository;
             _communityRepository=communityRepository;
+            _donationRepository = donationRepository;
         }
 
         [HttpGet]
@@ -210,6 +212,8 @@ namespace CharityLink.Controllers
 
                 var user = await _userRepository.GetByIdAsync(post.UserId);
 
+
+
                 if (!string.IsNullOrEmpty(post.ImageUrl))
                 {
                     post.ImageUrl = $"{baseUrl}{post.ImageUrl}";
@@ -263,12 +267,30 @@ namespace CharityLink.Controllers
             var post = postDto.ToPostFromCreateDTO();
             post.ImageUrl = imageUrl;
 
+            var user = await _userRepository.GetByIdAsync(post.UserId);
+            var community = await _communityRepository.GetByIdAsync(post.CommunityID);
+            var esxitsDonation = await _donationRepository.ExistDonationWithUser(post.CommunityID, post.UserId);
+
+
+            if (user != null && user.Role.Equals("admin"))
+            {
+                post.Type = 1;
+            }else if (community != null && community.AdminId == post.UserId){
+                post.Type = 2;
+            }else if (esxitsDonation)
+            {
+                post.Type = 3;
+            }else
+            {
+                post.Type = 4;
+            }
+           
 
             var postResult = await _postRepository.CreateAsync(post);
 
             var postReturn = postResult.ToPostDto();
 
-            var user = await _userRepository.GetByIdAsync(post.UserId);
+           
 
             if (!string.IsNullOrEmpty(postReturn.ImageUrl))
             {

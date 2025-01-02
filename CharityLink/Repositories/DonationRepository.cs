@@ -35,6 +35,11 @@ namespace CharityLink.Repositories
             return donation;
         }
 
+        public async Task<bool> ExistDonationWithUser(int CommunityId, int UserId)
+        {
+            return await _dBContext.Donations.Where(d => d.UserId == UserId && d.CommunityId == CommunityId).AnyAsync();
+        }
+
         public async Task<List<Donation>> GetAllAsync()
         {
             return await _dBContext.Donations.ToListAsync();

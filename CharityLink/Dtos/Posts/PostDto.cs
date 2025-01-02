@@ -30,6 +30,7 @@ namespace CharityLink.Dtos.Posts
         public String AvatarUrl { get; set; }
 
         public String CommunityName { get; set; }
+        public int Type { get; set; }
         public bool IsLiked { get; set; }
        
     }

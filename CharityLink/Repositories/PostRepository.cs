@@ -51,7 +51,10 @@ namespace CharityLink.Repositories
 
         public async Task<List<Post>> GetPostByCommunity(int CommunityId)
         {
-            return await _dBContext.Posts.Where(p => p.CommunityID == CommunityId).ToListAsync();
+            return await _dBContext.Posts.Where(p => p.CommunityID == CommunityId)
+                .OrderBy(p => p.Type)
+                .OrderByDescending(p => p.createDate)
+                .ToListAsync();
         }
 
         public async Task<List<Post>> GetPostByUser(int userId)

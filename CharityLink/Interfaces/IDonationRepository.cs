@@ -12,5 +12,6 @@ namespace CharityLink.Interfaces
         Task<int> GetDonationCount(int CommunityId);
         Task<List<Donation>> GetContributor(int CommunityId);
         Task<int> GetCountDonationByUser (int userId);
+        Task<bool> ExistDonationWithUser(int CommunityId, int UserId);
     }
 }
