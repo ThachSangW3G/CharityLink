@@ -1,4 +1,6 @@
-﻿namespace CharityLink.Dtos.Communities
+﻿using CharityLink.Models;
+
+namespace CharityLink.Dtos.Communities
 {
     public class UpdateCommunityRequestDto
     {
@@ -6,7 +8,7 @@
 
         public string Description { get; set; }
 
-        public bool IsPublished { get; set; }
+        public PublishStatus PublishStatus { get; set; }
 
         public int AdminId { get; set; }
 

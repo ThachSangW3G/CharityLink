@@ -12,7 +12,7 @@ namespace CharityLink.Mappers
                 CommunityId = community.CommunityId,
                 CommunityName = community.CommunityName,
                 Description = community.Description,
-                IsPublished = community.IsPublished,
+                PublishStatus = community.PublishStatus,
                 AdminId = community.AdminId,
                 CreateDate = community.CreateDate,
                 StartDate = community.StartDate,
@@ -31,7 +31,7 @@ namespace CharityLink.Mappers
             {
                 CommunityName= communityRequestDto.CommunityName,
                 Description = communityRequestDto.Description,
-                IsPublished= communityRequestDto.IsPublished,
+                PublishStatus= communityRequestDto.PublishStatus,
                 AdminId= communityRequestDto.AdminId,
                 CreateDate= communityRequestDto.CreateDate,
                 StartDate= communityRequestDto.StartDate,
@@ -49,7 +49,7 @@ namespace CharityLink.Mappers
             {
                 CommunityName= communityRequestDto.CommunityName,
                 Description = communityRequestDto.Description,
-                IsPublished= communityRequestDto.IsPublished,
+                PublishStatus= communityRequestDto.PublishStatus,
                 AdminId= communityRequestDto.AdminId,
                 CreateDate= communityRequestDto.CreateDate,
                 StartDate= communityRequestDto.StartDate,

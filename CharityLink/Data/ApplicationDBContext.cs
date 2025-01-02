@@ -35,6 +35,15 @@ namespace CharityLink.Data
                 .HasForeignKey(l => l.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Community>()
+                .Property(e => e.Latitude)
+                .HasColumnType("decimal(18,8)");
+
+            modelBuilder.Entity<Community>()
+                .Property(e => e.Longitude)
+                .HasColumnType("decimal(18,8)");
+
+
             modelBuilder.Entity<Like>()
                 .HasOne(l => l.Post)
                 .WithMany(p => p.Likes)

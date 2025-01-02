@@ -7,13 +7,14 @@ namespace CharityLink.Interfaces
         Task<List<Community>> GetAllAsync ();
         //for Admin
         Task<List<Community>> GetAllNoPublic ();
+
+        Task<List<Community>> GetCommunitiesRejected ();
         Task<Community?> GetByIdAsync(int Id);
         Task<Community> CreateAsync(Community community);
         Task<Community?> UpdateAsync(int Id, Community community);
         Task<Community?> DeleteAsync(int Id);
 
-        Task<bool> UpdateIsPublishedAsync(int Id, bool isPublished);
-
+        Task<bool> UpdatePublishStatusAsync(int Id, PublishStatus publishStatus);
 
         Task<List<Post>> GetPostByCommunityId(int CommunityId);
         Task<List<Donation>> GetDonationByCommunityId(int CommunityId);
@@ -24,6 +25,8 @@ namespace CharityLink.Interfaces
 
         //for User
         Task<List<Community>> GetCommunitiesByAdminIdNoPublic(int AdminId);
+
+        Task<List<Community>> GetCommunitiesByAdminIdRejected(int AdminId);
 
         Task<List<Community>> GetUpComing();
         Task<List<Community>> GetOnGoing();
